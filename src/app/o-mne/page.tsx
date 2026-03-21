@@ -1,10 +1,10 @@
 
 export default function OMne() {
 	return (
-		<div className='bg-black text-white pt-10 pb-20 w-full flex-1'>
-			<div className="content_container text-xl flex flex-col gap-2 italic">
+		<div className='bg-black text-white py-10 md:py-16 lg:py-20 w-full flex-1'>
+			<div className="content_container text-base md:text-lg lg:text-xl flex flex-col gap-3 md:gap-4 lg:gap-5 italic px-4">
 				<p>
-					Jmenuji se Natália a můj příběh se svíčkami začal z lásky ❤️ 
+					Jmenuji se Natália a můj příběh se svíčkami začal z lásky ❤️
 				</p>
 				<p>
 					Jednoho dne jsem chtěla překvapit svého manžela – darovat mu něco opravdu výjimečného. Ne obyčejný dárek, ale emoci. Tak vznikla moje první svíčka. Manželovi se natolik líbila, že jsem si uvědomila, že to není jen svíčka. Je to něco víc. A v tu chvíli jsem se do světa svíček zamilovala i já.

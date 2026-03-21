@@ -40,25 +40,25 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 	// Показываем форму выбора количества до монтирования
 	if (!mounted) {
 		return (
-			<div className="mb-12 space-y-4">
-				<div className="flex items-center gap-4">
-					<span className="text-gray-300 font_nexa text-lg">Množství:</span>
-					<div className="flex items-center border-2 border-marigold/50">
-						<button className="px-4 py-2 text-2xl text-marigold hover:bg-marigold/10 transition-all">
+			<div className="mb-8 md:mb-12 space-y-3 md:space-y-4">
+				<div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+					<span className="text-gray-300 font_nexa text-base md:text-lg">Množství:</span>
+					<div className="flex items-center border-2 border-marigold/50 w-full sm:w-auto">
+						<button className="px-3 md:px-4 py-2 text-xl md:text-2xl text-marigold hover:bg-marigold/10 transition-all flex-1 sm:flex-none">
 							−
 						</button>
-						<span className="px-6 py-2 text-xl font_nexa text-white min-w-[60px] text-center">
+						<span className="px-4 md:px-6 py-2 text-lg md:text-xl font_nexa text-white min-w-[60px] text-center flex-1 sm:flex-none">
 							1
 						</span>
-						<button className="px-4 py-2 text-2xl text-marigold hover:bg-marigold/10 transition-all">
+						<button className="px-3 md:px-4 py-2 text-xl md:text-2xl text-marigold hover:bg-marigold/10 transition-all flex-1 sm:flex-none">
 							+
 						</button>
 					</div>
-					<span className="text-gray-400 ml-auto text-lg">
+					<span className="text-gray-400 sm:ml-auto text-base md:text-lg">
 						{product.price} Kč
 					</span>
 				</div>
-				<button className="hero_btn w-full py-4 text-xl">
+				<button className="hero_btn w-full py-3 md:py-4 text-lg md:text-xl">
 					PŘIDAT DO KOŠÍKU
 				</button>
 			</div>
@@ -70,10 +70,10 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 	// Если товар уже в корзине, показываем кнопку перехода в корзину
 	if (productInCart && !isAdded) {
 		return (
-			<div className="mb-12">
+			<div className="mb-8 md:mb-12">
 				<Link
 					href="/cart"
-					className="block w-full text-center py-4 text-xl border-2 border-marigold bg-marigold/10 text-marigold hover:bg-marigold hover:text-black transition-all font_nexa"
+					className="block w-full text-center py-3 md:py-4 text-base md:text-xl border-2 border-marigold bg-marigold/10 text-marigold hover:bg-marigold hover:text-black transition-all font_nexa"
 				>
 					✓ V KOŠÍKU - ZOBRAZIT KOŠÍK
 				</Link>
@@ -84,13 +84,13 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 	// После добавления показываем сообщение
 	if (isAdded) {
 		return (
-			<div className="mb-12 space-y-4">
-				<div className="w-full bg-green-600 text-white py-4 text-xl font_nexa text-center">
+			<div className="mb-8 md:mb-12 space-y-3 md:space-y-4">
+				<div className="w-full bg-green-600 text-white py-3 md:py-4 text-base md:text-xl font_nexa text-center">
 					✓ PŘIDÁNO DO KOŠÍKU
 				</div>
 				<Link
 					href="/cart"
-					className="block w-full text-center py-3 border-2 border-marigold text-marigold hover:bg-marigold hover:text-black transition-all font_nexa text-xl"
+					className="block w-full text-center py-2 md:py-3 border-2 border-marigold text-marigold hover:bg-marigold hover:text-black transition-all font_nexa text-base md:text-xl"
 				>
 					Zobrazit košík
 				</Link>
@@ -100,28 +100,28 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
 	// Форма выбора количества и добавления в корзину
 	return (
-		<div className="mb-12 space-y-4">
+		<div className="mb-8 md:mb-12 space-y-3 md:space-y-4">
 			{/* Quantity Selector */}
-			<div className="flex items-center gap-4">
-				<span className="text-gray-300 font_nexa text-lg">Množství:</span>
-				<div className="flex items-center border-2 border-marigold/50">
+			<div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+				<span className="text-gray-300 font_nexa text-base md:text-lg">Množství:</span>
+				<div className="flex items-center border-2 border-marigold/50 w-full sm:w-auto">
 					<button
 						onClick={decrementQuantity}
-						className="px-4 py-2 text-2xl text-marigold hover:bg-marigold/10 transition-all"
+						className="px-3 md:px-4 py-2 text-xl md:text-2xl text-marigold hover:bg-marigold/10 transition-all flex-1 sm:flex-none"
 					>
 						−
 					</button>
-					<span className="px-6 py-2 text-xl font_nexa text-white min-w-[60px] text-center">
+					<span className="px-4 md:px-6 py-2 text-lg md:text-xl font_nexa text-white min-w-[60px] text-center flex-1 sm:flex-none">
 						{quantity}
 					</span>
 					<button
 						onClick={incrementQuantity}
-						className="px-4 py-2 text-2xl text-marigold hover:bg-marigold/10 transition-all"
+						className="px-3 md:px-4 py-2 text-xl md:text-2xl text-marigold hover:bg-marigold/10 transition-all flex-1 sm:flex-none"
 					>
 						+
 					</button>
 				</div>
-				<span className="text-gray-400 ml-auto text-lg">
+				<span className="text-gray-400 sm:ml-auto text-base md:text-lg">
 					{product.price * quantity} Kč
 				</span>
 			</div>
@@ -129,7 +129,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 			{/* Add to Cart Button */}
 			<button
 				onClick={handleAddToCart}
-				className="hero_btn w-full py-4 text-xl"
+				className="hero_btn w-full py-3 md:py-4 text-lg md:text-xl"
 			>
 				PŘIDAT DO KOŠÍKU
 			</button>

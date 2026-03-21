@@ -15,14 +15,14 @@ import Image from 'next/image'
 const nav = [
 	{
 		name: 'e-shop',
-		href: '/eshop'
+		href: '/categories'
 	},
 	{
 		name: 'o mně',
 		href: '/o-mne'
 	},
 	{
-		name: 'abchodní podmínky',
+		name: 'obchodní podmínky',
 		href: '/obchodni-podminky'
 	},
 	{
@@ -37,6 +37,7 @@ const Header: React.FC = () => {
 	const router = useRouter()
 	const { addToCart } = useCart()
 	const [isSearchOpen, setIsSearchOpen] = useState(false)
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 	const [searchQuery, setSearchQuery] = useState('')
 	const [debouncedQuery, setDebouncedQuery] = useState('')
 
@@ -76,13 +77,15 @@ const Header: React.FC = () => {
 	}
 
 	return (
-		<header className='py-5'>
-			<div className='content_container flex items-center justify-center'>
-				<Link href='/' className='mr-auto'>
-					<Image src={home} alt='home' className='w-7 h-7 cursor-pointer duration-300 hover:opacity-80' />
+		<header className='py-3 md:py-5'>
+			<div className='content_container flex items-center justify-between'>
+				<Link href='/' className=''>
+					<Image src={home} alt='home' className='w-6 h-6 md:w-7 md:h-7 cursor-pointer duration-300 hover:opacity-80' />
 				</Link>
-				<nav className='flex-1'>
-					<ul className='flex items-center gap-10 font_nexa text-xl justify-center'>
+				
+				{/* Desktop Navigation */}
+				<nav className='hidden lg:flex flex-1 items-center justify-center mx-8'>
+					<ul className='flex items-center gap-4 xl:gap-10 font_nexa text-base xl:text-xl justify-center'>
 						{nav.map((item) => {
 							const isActive = pathname === item.href
 							return (
@@ -95,14 +98,14 @@ const Header: React.FC = () => {
 													element.scrollIntoView({ behavior: 'smooth' })
 												}
 											}}
-											className={`duration-300 text-nugget hover:text-marigold`}
+											className={`duration-300 text-nugget hover:text-marigold whitespace-nowrap`}
 										>
 											{item.name}
 										</button>
 									) : (
 										<Link
 											href={item.href}
-											className={`duration-300 ${isActive
+											className={`duration-300 whitespace-nowrap ${isActive
 												? 'text-marigold underline underline-offset-2'
 												: 'text-nugget hover:text-marigold'
 												}`}
@@ -115,19 +118,73 @@ const Header: React.FC = () => {
 						})}
 					</ul>
 				</nav>
-				<div className='flex items-center gap-5 ml-auto'>
+				
+				{/* Icons */}
+				<div className='flex items-center gap-3 md:gap-5'>
 					<button
 						onClick={() => setIsSearchOpen(true)}
-						className='w-7 h-7 duration-300 hover:opacity-80'
+						className='w-6 h-6 md:w-7 md:h-7 duration-300 hover:opacity-80'
 					>
 						<Image src={search} alt='search' className='cursor-pointer' />
 					</button>
-					<Link href='/cart' className='w-7 h-7 duration-300 hover:opacity-80 relative'>
+					<Link href='/cart' className='w-6 h-6 md:w-7 md:h-7 duration-300 hover:opacity-80 relative'>
 						<Image src={cart} alt='cart' className='cursor-pointer' />
 						<CartBadge />
 					</Link>
+					
+					{/* Mobile Menu Button */}
+					<button
+						onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+						className='lg:hidden w-6 h-6 md:w-7 md:h-7 flex flex-col justify-center items-center gap-1'
+					>
+						<span className={`w-6 h-0.5 bg-marigold transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
+						<span className={`w-6 h-0.5 bg-marigold transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
+						<span className={`w-6 h-0.5 bg-marigold transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
+					</button>
 				</div>
 			</div>
+			
+			{/* Mobile Menu */}
+			{isMobileMenuOpen && (
+				<div className='lg:hidden border-t border-marigold/30 mt-3'>
+					<nav className='content_container py-4'>
+						<ul className='flex flex-col gap-3 font_nexa text-lg'>
+							{nav.map((item) => {
+								const isActive = pathname === item.href
+								return (
+									<li key={item.name}>
+										{item.isScrollLink ? (
+											<button
+												onClick={() => {
+													const element = document.getElementById('contacts')
+													if (element) {
+														element.scrollIntoView({ behavior: 'smooth' })
+													}
+													setIsMobileMenuOpen(false)
+												}}
+												className={`duration-300 text-nugget hover:text-marigold block w-full text-left py-2`}
+											>
+												{item.name}
+											</button>
+										) : (
+											<Link
+												href={item.href}
+												onClick={() => setIsMobileMenuOpen(false)}
+												className={`duration-300 block py-2 ${isActive
+													? 'text-marigold underline underline-offset-2'
+													: 'text-nugget hover:text-marigold'
+													}`}
+											>
+												{item.name}
+											</Link>
+										)}
+									</li>
+								)
+							})}
+						</ul>
+					</nav>
+				</div>
+			)}
 
 			{/* Search Modal */}
 			{isSearchOpen && (
