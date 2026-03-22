@@ -1,14 +1,21 @@
 'use client';
 
+import ColorSelectionModal from '@/components/ColorSelectionModal';
+import { useCart } from '@/context/CartContext';
 import { categories, getProductsByCategory } from '@/data/products';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
 export default function CategoriesPage() {
 	const searchParams = useSearchParams();
 	const router = useRouter();
+	const { addToCart } = useCart();
 	const tabParam = searchParams.get('tab');
+
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
 	// Определяем активную категорию (по умолчанию первая)
 	const activeCategory = tabParam || 'glass';
@@ -18,6 +25,24 @@ export default function CategoriesPage() {
 
 	const handleTabChange = (slug: string) => {
 		router.push(`/categories?tab=${slug}`, { scroll: false });
+	};
+
+	const handleAddToCart = (product: any) => {
+		if (product.colorOptions && product.colorOptions.length > 0) {
+			// Открываем модалку для выбора цвета
+			setSelectedProduct(product);
+			setIsModalOpen(true);
+		} else {
+			// Добавляем в корзину сразу
+			addToCart(product);
+		}
+	};
+
+	const handleAddToCartWithColor = (selectedColor: string) => {
+		if (selectedProduct) {
+			addToCart(selectedProduct, selectedColor);
+			setSelectedProduct(null);
+		}
 	};
 
 	return (
@@ -61,8 +86,7 @@ export default function CategoriesPage() {
 				{/* Products Grid */}
 				<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
 					{products.map((product) => (
-						<Link
-							href={`/product/${product.id}`}
+						<div
 							key={product.id}
 							className="group border-2 border-marigold/30 hover:border-marigold transition-all duration-300 overflow-hidden"
 						>
@@ -103,9 +127,12 @@ export default function CategoriesPage() {
 										{product.price} Kč
 									</span>
 									{product.inStock ? (
-										<span className="px-3 py-2 md:px-4 md:py-2 border-2 border-marigold text-marigold group-hover:bg-marigold group-hover:text-black transition-all duration-300 font_nexa text-sm md:text-base">
-											DETAIL
-										</span>
+										<button
+											onClick={() => handleAddToCart(product)}
+											className="px-3 py-2 md:px-4 md:py-2 border-2 border-marigold text-marigold hover:bg-marigold hover:text-black transition-all duration-300 font_nexa text-sm md:text-base"
+										>
+											DO KOŠÍKU
+										</button>
 									) : (
 										<span className="px-3 py-2 md:px-4 md:py-2 border-2 border-gray-600 text-gray-600 font_nexa text-sm md:text-base">
 											VYPRODÁNO
@@ -113,7 +140,7 @@ export default function CategoriesPage() {
 									)}
 								</div>
 							</div>
-						</Link>
+						</div>
 					))}
 				</div>
 
@@ -133,6 +160,22 @@ export default function CategoriesPage() {
 					</Link>
 				</div>
 			</div>
+
+			{/* Color Selection Modal */}
+			{selectedProduct && selectedProduct.colorOptions && (
+				<ColorSelectionModal
+					isOpen={isModalOpen}
+					onClose={() => {
+						setIsModalOpen(false);
+						setSelectedProduct(null);
+					}}
+					productName={selectedProduct.name}
+					productImage={selectedProduct.image}
+					productPrice={selectedProduct.price}
+					colors={selectedProduct.colorOptions}
+					onAddToCart={handleAddToCartWithColor}
+				/>
+			)}
 		</main>
 	);
 }

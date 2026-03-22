@@ -17,6 +17,11 @@ import gl_4 from '../assets/products/glass/4.jpg';
 import gl_5 from '../assets/products/glass/5.jpg';
 import gl_6 from '../assets/products/glass/6.jpg';
 
+export interface ColorOption {
+	name: string;
+	value: string;
+}
+
 export interface Product {
 	id: string;
 	name: string;
@@ -27,6 +32,7 @@ export interface Product {
 	weight?: number;
 	height?: number;
 	aroma?: string;
+	colorOptions?: ColorOption[];
 	details: {
 		scent?: string;
 		volume: string;
@@ -102,6 +108,12 @@ export const products: Product[] = [
 		image: gl_4,
 		description:
 			'Růžová, něžná a trochu drzá. Stojí si tiše na poličce… ale všichni si jí všimnou. Zapálíš knot a najednou má i obyčejný večer pocit, že je sváteční. Protože některé maličkosti prostě umí dělat velkou atmosféru.',
+		colorOptions: [
+			{ name: 'Bílá', value: 'white' },
+			{ name: 'Červená', value: 'red' },
+			{ name: 'Žlutá', value: 'yellow' },
+			{ name: 'Fialová', value: 'purple' },
+		],
 		details: {
 			scent: 'marakuja, papája, tropické ovoce, květiny, růže a pižmo',
 			volume: 'cca 230ml sójového vosku ve 300ml sklenici',

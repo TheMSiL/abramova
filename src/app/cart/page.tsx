@@ -43,68 +43,76 @@ export default function CartPage() {
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
 					{/* Cart Items */}
 					<div className="lg:col-span-2 space-y-3 md:space-y-4">
-						{cart.map((item) => (
-							<div
-								key={item.id}
-								className="border-2 border-marigold/30 p-4 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6"
-							>
-								{/* Product Image */}
-								<div className="w-24 h-24 md:w-32 md:h-32 bg-gray-900 flex items-center justify-center text-3xl md:text-4xl flex-shrink-0 mx-auto md:mx-0">
-									🕯️
-								</div>
+						{cart.map((item) => {
+							const colorName = item.selectedColor
+								? item.colorOptions?.find(c => c.value === item.selectedColor)?.name
+								: null;
 
-								{/* Product Info */}
-								<div className="flex-1">
-									<Link
-										href={`/product/${item.id}`}
-										className="text-lg md:text-xl font_nexa text-marigold hover:underline mb-2 block"
-									>
-										{item.name}
-									</Link>
-									<p className="text-xs md:text-sm text-gray-500 mb-2">Kód: {item.id}</p>
+							return (
+								<div
+									key={`${item.id}-${item.selectedColor || 'default'}`}
+									className="border-2 border-marigold/30 p-4 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6"
+								>
+									{/* Product Image */}
+									<div className="w-24 h-24 md:w-32 md:h-32 bg-gray-900 flex items-center justify-center text-3xl md:text-4xl flex-shrink-0 mx-auto md:mx-0">
+										🕯️
+									</div>
 
-									<p className="text-xl md:text-2xl font_nexa text-marigold mb-3 md:mb-4">
-										{item.price} Kč
-									</p>
+									{/* Product Info */}
+									<div className="flex-1">
+										<h3 className="text-lg md:text-xl font_nexa text-marigold mb-2">
+											{item.name}
+										</h3>
+										{colorName && (
+											<p className="text-sm md:text-base text-gray-400 mb-2">
+												Barva: <span className="text-marigold">{colorName}</span>
+											</p>
+										)}
+										<p className="text-xs md:text-sm text-gray-500 mb-2">Kód: {item.id}</p>
 
-									{/* Quantity Controls */}
-									<div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4">
-										<div className="flex items-center border-2 border-marigold w-full sm:w-auto">
+										<p className="text-xl md:text-2xl font_nexa text-marigold mb-3 md:mb-4">
+											{item.price} Kč
+										</p>
+
+										{/* Quantity Controls */}
+										<div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4">
+											<div className="flex items-center border-2 border-marigold w-full sm:w-auto">
+												<button
+													onClick={() => updateQuantity(item.id, item.quantity - 1, item.selectedColor)}
+													className="px-3 md:px-4 py-2 text-marigold hover:bg-marigold hover:text-black transition-all font_nexa text-lg md:text-xl flex-1 sm:flex-none"
+												>
+													−
+												</button>
+												<span className="px-4 md:px-6 py-2 border-x-2 border-marigold text-white font_nexa flex-1 sm:flex-none text-center">
+													{item.quantity}
+												</span>
+												<button
+													onClick={() => updateQuantity(item.id, item.quantity + 1, item.selectedColor)}
+													className="px-3 md:px-4 py-2 text-marigold hover:bg-marigold hover:text-black transition-all font_nexa text-lg md:text-xl flex-1 sm:flex-none"
+												>
+													+
+												</button>
+											</div>
+
 											<button
-												onClick={() => updateQuantity(item.id, item.quantity - 1)}
-												className="px-3 md:px-4 py-2 text-marigold hover:bg-marigold hover:text-black transition-all font_nexa text-lg md:text-xl flex-1 sm:flex-none"
+												onClick={() => removeFromCart(item.id, item.selectedColor)}
+												className="px-4 py-2 border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all text-sm md:text-base w-full sm:w-auto"
 											>
-												−
-											</button>
-											<span className="px-4 md:px-6 py-2 border-x-2 border-marigold text-white font_nexa flex-1 sm:flex-none text-center">
-												{item.quantity}
-											</span>
-											<button
-												onClick={() => updateQuantity(item.id, item.quantity + 1)}
-												className="px-3 md:px-4 py-2 text-marigold hover:bg-marigold hover:text-black transition-all font_nexa text-lg md:text-xl flex-1 sm:flex-none"
-											>
-												+
+												Odebrat
 											</button>
 										</div>
+									</div>
 
-										<button
-											onClick={() => removeFromCart(item.id)}
-											className="px-4 py-2 border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all text-sm md:text-base w-full sm:w-auto"
-										>
-											Odebrat
-										</button>
+									{/* Item Total */}
+									<div className="text-center md:text-right mt-2 md:mt-0">
+										<p className="text-xs md:text-sm text-gray-500 mb-1 md:mb-2">Celkem</p>
+										<p className="text-xl md:text-2xl font_nexa text-marigold">
+											{item.price * item.quantity} Kč
+										</p>
 									</div>
 								</div>
-
-								{/* Item Total */}
-								<div className="text-center md:text-right mt-2 md:mt-0">
-									<p className="text-xs md:text-sm text-gray-500 mb-1 md:mb-2">Celkem</p>
-									<p className="text-xl md:text-2xl font_nexa text-marigold">
-										{item.price * item.quantity} Kč
-									</p>
-								</div>
-							</div>
-						))}
+							);
+						})}
 					</div>
 
 					{/* Order Summary */}

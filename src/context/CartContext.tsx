@@ -5,18 +5,19 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface CartItem extends Product {
 	quantity: number;
+	selectedColor?: string;
 }
 
 interface CartContextType {
 	cart: CartItem[];
-	addToCart: (product: Product) => void;
-	addToCartWithQuantity: (product: Product, quantity: number) => void;
-	removeFromCart: (productId: string) => void;
-	updateQuantity: (productId: string, quantity: number) => void;
+	addToCart: (product: Product, selectedColor?: string) => void;
+	addToCartWithQuantity: (product: Product, quantity: number, selectedColor?: string) => void;
+	removeFromCart: (productId: string, selectedColor?: string) => void;
+	updateQuantity: (productId: string, quantity: number, selectedColor?: string) => void;
 	clearCart: () => void;
 	getTotalItems: () => number;
 	getTotalPrice: () => number;
-	isInCart: (productId: string) => boolean;
+	isInCart: (productId: string, selectedColor?: string) => boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -42,59 +43,77 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 		}
 	}, [cart]);
 
-	const addToCart = (product: Product) => {
+	const addToCart = (product: Product, selectedColor?: string) => {
 		setCart((prevCart) => {
-			const existingItem = prevCart.find((item) => item.id === product.id);
+			const cartKey = selectedColor ? `${product.id}-${selectedColor}` : product.id;
+			const existingItem = prevCart.find((item) => {
+				const itemKey = item.selectedColor ? `${item.id}-${item.selectedColor}` : item.id;
+				return itemKey === cartKey;
+			});
 
 			if (existingItem) {
 				// Увеличиваем количество
-				return prevCart.map((item) =>
-					item.id === product.id
+				return prevCart.map((item) => {
+					const itemKey = item.selectedColor ? `${item.id}-${item.selectedColor}` : item.id;
+					return itemKey === cartKey
 						? { ...item, quantity: item.quantity + 1 }
-						: item
-				);
+						: item;
+				});
 			} else {
 				// Добавляем новый товар
-				return [...prevCart, { ...product, quantity: 1 }];
+				return [...prevCart, { ...product, quantity: 1, selectedColor }];
 			}
 		});
 	};
 
-	const addToCartWithQuantity = (product: Product, quantity: number) => {
+	const addToCartWithQuantity = (product: Product, quantity: number, selectedColor?: string) => {
 		if (quantity <= 0) return;
 
 		setCart((prevCart) => {
-			const existingItem = prevCart.find((item) => item.id === product.id);
+			const cartKey = selectedColor ? `${product.id}-${selectedColor}` : product.id;
+			const existingItem = prevCart.find((item) => {
+				const itemKey = item.selectedColor ? `${item.id}-${item.selectedColor}` : item.id;
+				return itemKey === cartKey;
+			});
 
 			if (existingItem) {
 				// Увеличиваем количество на указанное значение
-				return prevCart.map((item) =>
-					item.id === product.id
+				return prevCart.map((item) => {
+					const itemKey = item.selectedColor ? `${item.id}-${item.selectedColor}` : item.id;
+					return itemKey === cartKey
 						? { ...item, quantity: item.quantity + quantity }
-						: item
-				);
+						: item;
+				});
 			} else {
 				// Добавляем новый товар с указанным количеством
-				return [...prevCart, { ...product, quantity }];
+				return [...prevCart, { ...product, quantity, selectedColor }];
 			}
 		});
 	};
 
-	const removeFromCart = (productId: string) => {
-		setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+	const removeFromCart = (productId: string, selectedColor?: string) => {
+		setCart((prevCart) => {
+			const cartKey = selectedColor ? `${productId}-${selectedColor}` : productId;
+			return prevCart.filter((item) => {
+				const itemKey = item.selectedColor ? `${item.id}-${item.selectedColor}` : item.id;
+				return itemKey !== cartKey;
+			});
+		});
 	};
 
-	const updateQuantity = (productId: string, quantity: number) => {
+	const updateQuantity = (productId: string, quantity: number, selectedColor?: string) => {
 		if (quantity <= 0) {
-			removeFromCart(productId);
+			removeFromCart(productId, selectedColor);
 			return;
 		}
 
-		setCart((prevCart) =>
-			prevCart.map((item) =>
-				item.id === productId ? { ...item, quantity } : item
-			)
-		);
+		setCart((prevCart) => {
+			const cartKey = selectedColor ? `${productId}-${selectedColor}` : productId;
+			return prevCart.map((item) => {
+				const itemKey = item.selectedColor ? `${item.id}-${item.selectedColor}` : item.id;
+				return itemKey === cartKey ? { ...item, quantity } : item;
+			});
+		});
 	};
 
 	const clearCart = () => {
@@ -109,8 +128,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 		return cart.reduce((total, item) => total + item.price * item.quantity, 0);
 	};
 
-	const isInCart = (productId: string) => {
-		return cart.some((item) => item.id === productId);
+	const isInCart = (productId: string, selectedColor?: string) => {
+		const cartKey = selectedColor ? `${productId}-${selectedColor}` : productId;
+		return cart.some((item) => {
+			const itemKey = item.selectedColor ? `${item.id}-${item.selectedColor}` : item.id;
+			return itemKey === cartKey;
+		});
 	};
 
 	return (

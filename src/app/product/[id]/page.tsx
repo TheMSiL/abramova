@@ -1,5 +1,6 @@
 import AddToCartButton from '@/components/AddToCartButton';
 import { getCategoryBySlug, getProductById } from '@/data/products';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -26,9 +27,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
 					{/* Product Image */}
 					<div className="relative">
 						<div className="lg:sticky lg:top-20">
-							<div className="border-2 border-marigold/30 p-4 md:p-8 bg-gray-900">
-								<div className="aspect-square flex items-center justify-center text-6xl md:text-8xl lg:text-9xl">
-									🕯️
+							<div className="border-2 border-marigold/30 ">
+								<div className="aspect-square relative overflow-hidden">
+									<Image
+										src={product.image}
+										alt={product.name}
+										fill
+										className="object-cover"
+										priority
+									/>
 								</div>
 								{!product.inStock && (
 									<div className="absolute top-4 right-4 md:top-8 md:right-8 bg-red-600 text-white px-3 py-2 md:px-6 md:py-3 text-sm md:text-lg font_nexa">
