@@ -7,22 +7,22 @@ export const metadata: Metadata = {
 
 export default function ObchodniPodminky() {
 	return (
-		<div className='bg-black text-white py-10 md:py-16 lg:py-20 w-full flex-1'>
+		<div className='bg-black text-white py-10 md:py-16 lg:py-20 w-full flex-1 font_nexa'>
 			<div className="content_container px-4">
-				<h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 lg:mb-16">
+				<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-8 md:mb-12 lg:mb-16">
 					Obchodní podmínky a ochrana osobních údajů
 				</h1>
 
 				{/* Obchodní podmínky */}
 				<section className="mb-12 md:mb-16">
-					<h2 className="text-2xl md:text-3xl font-semibold mb-6 md:mb-8 border-b border-white/20 pb-3">
+					<h2 className="text-3xl md:text-4xl font-semibold mb-6 md:mb-8 border-b border-white/20 pb-3">
 						Obchodní podmínky
 					</h2>
 
-					<div className="space-y-8 text-base md:text-lg">
+					<div className="space-y-8 text-lg md:text-xl">
 						{/* 1. Úvodní ustanovení */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								1. Úvodní ustanovení
 							</h3>
 							<div className="space-y-2 text-white/90 leading-relaxed">
@@ -37,7 +37,7 @@ export default function ObchodniPodminky() {
 
 						{/* 2. Prodávající */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								2. Prodávající
 							</h3>
 							<div className="bg-white/5 rounded-lg p-4 md:p-6 space-y-2 text-white/90">
@@ -51,7 +51,7 @@ export default function ObchodniPodminky() {
 
 						{/* 3. Uzavření kupní smlouvy */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								3. Uzavření kupní smlouvy
 							</h3>
 							<div className="space-y-2 text-white/90 leading-relaxed">
@@ -72,7 +72,7 @@ export default function ObchodniPodminky() {
 
 						{/* 4. Cena a platební podmínky */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								4. Cena a platební podmínky
 							</h3>
 							<div className="space-y-2 text-white/90 leading-relaxed">
@@ -90,7 +90,7 @@ export default function ObchodniPodminky() {
 
 						{/* 5. Výroba a dodání zboží */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								5. Výroba a dodání zboží
 							</h3>
 							<div className="space-y-2 text-white/90 leading-relaxed">
@@ -108,7 +108,7 @@ export default function ObchodniPodminky() {
 
 						{/* 6. Odstoupení od smlouvy */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								6. Odstoupení od smlouvy
 							</h3>
 							<div className="space-y-2 text-white/90 leading-relaxed">
@@ -120,7 +120,7 @@ export default function ObchodniPodminky() {
 
 						{/* 7. Reklamace */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								7. Reklamace
 							</h3>
 							<div className="space-y-2 text-white/90 leading-relaxed">
@@ -135,7 +135,7 @@ export default function ObchodniPodminky() {
 
 						{/* 8. Odpovědnost a bezpečnost */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								8. Odpovědnost a bezpečnost
 							</h3>
 							<div className="space-y-3 text-white/90 leading-relaxed">
@@ -160,14 +160,14 @@ export default function ObchodniPodminky() {
 
 				{/* Ochrana osobních údajů */}
 				<section className="mb-12 md:mb-16">
-					<h2 className="text-2xl md:text-3xl font-semibold mb-6 md:mb-8 border-b border-white/20 pb-3">
+					<h2 className="text-3xl md:text-4xl font-semibold mb-6 md:mb-8 border-b border-white/20 pb-3">
 						Ochrana osobních údajů
 					</h2>
 
-					<div className="space-y-8 text-base md:text-lg">
+					<div className="space-y-8 text-lg md:text-xl">
 						{/* 9. Správce osobních údajů */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								9. Správce osobních údajů
 							</h3>
 							<p className="mb-3 text-white/90">Správcem osobních údajů je:</p>
@@ -182,7 +182,7 @@ export default function ObchodniPodminky() {
 
 						{/* 10. Jaké údaje zpracováváme */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								10. Jaké údaje zpracováváme
 							</h3>
 							<p className="mb-2 text-white/90">Zpracováváme:</p>
@@ -196,7 +196,7 @@ export default function ObchodniPodminky() {
 
 						{/* 11. Účel zpracování */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								11. Účel zpracování
 							</h3>
 							<p className="mb-2 text-white/90">Údaje jsou zpracovávány za účelem:</p>
@@ -209,7 +209,7 @@ export default function ObchodniPodminky() {
 
 						{/* 12. Doba uchování */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								12. Doba uchování
 							</h3>
 							<p className="text-white/90">
@@ -219,7 +219,7 @@ export default function ObchodniPodminky() {
 
 						{/* 13. Předávání údajů */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								13. Předávání údajů
 							</h3>
 							<p className="mb-2 text-white/90">Údaje mohou být předány:</p>
@@ -231,7 +231,7 @@ export default function ObchodniPodminky() {
 
 						{/* 14. Práva zákazníka */}
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								14. Práva zákazníka
 							</h3>
 							<p className="mb-2 text-white/90">Máte právo:</p>
@@ -248,13 +248,13 @@ export default function ObchodniPodminky() {
 
 				{/* Závěrečná ustanovení */}
 				<section className="mb-8">
-					<h2 className="text-2xl md:text-3xl font-semibold mb-6 md:mb-8 border-b border-white/20 pb-3">
+					<h2 className="text-3xl md:text-4xl font-semibold mb-6 md:mb-8 border-b border-white/20 pb-3">
 						Závěrečná ustanovení
 					</h2>
 
-					<div className="space-y-8 text-base md:text-lg">
+					<div className="space-y-8 text-lg md:text-xl">
 						<div>
-							<h3 className="text-xl md:text-2xl font-semibold mb-3 text-amber-200">
+							<h3 className="text-2xl md:text-3xl font-semibold mb-3 text-amber-200">
 								15. Závěrečná ustanovení
 							</h3>
 							<div className="space-y-2 text-white/90 leading-relaxed">
@@ -273,7 +273,7 @@ export default function ObchodniPodminky() {
 				</section>
 
 				{/* Footer note */}
-				<div className="text-center text-sm md:text-base text-white/60 pt-8 border-t border-white/10">
+				<div className="text-center text-base md:text-lg text-white/60 pt-8 border-t border-white/10">
 					<p>© 2026 Abramova Svíčky & Dekorace. Všechna práva vyhrazena.</p>
 				</div>
 			</div>

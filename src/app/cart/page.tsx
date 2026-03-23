@@ -2,9 +2,11 @@
 
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function CartPage() {
 	const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
+	const [paymentMethod, setPaymentMethod] = useState<'online' | 'dobírka'>('online');
 
 	if (cart.length === 0) {
 		return (
@@ -145,6 +147,56 @@ export default function CartPage() {
 								</div>
 							</div>
 
+							{/* Payment Method Selection */}
+							<div className="mb-4 md:mb-6 pb-4 md:pb-6 border-b-2 border-gray-700">
+								<h3 className="font_nexa text-marigold mb-3 md:mb-4 text-base md:text-lg">
+									Způsob platby:
+								</h3>
+								<div className="space-y-2 md:space-y-3">
+									<label
+										className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${
+											paymentMethod === 'online'
+												? 'border-marigold bg-marigold/10'
+												: 'border-white/20 hover:border-marigold/50'
+										}`}
+									>
+										<input
+											type="radio"
+											name="payment"
+											value="online"
+											checked={paymentMethod === 'online'}
+											onChange={(e) => setPaymentMethod(e.target.value as 'online')}
+											className="w-4 h-4 md:w-5 md:h-5 accent-marigold"
+										/>
+										<div className="flex-1">
+											<span className="text-sm md:text-base font_nexa">Google Pay / Apple Pay</span>
+											<p className="text-xs text-gray-400 mt-1">Rychlá a bezpečná online platba</p>
+										</div>
+									</label>
+
+									<label
+										className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${
+											paymentMethod === 'dobírka'
+												? 'border-marigold bg-marigold/10'
+												: 'border-white/20 hover:border-marigold/50'
+										}`}
+									>
+										<input
+											type="radio"
+											name="payment"
+											value="dobírka"
+											checked={paymentMethod === 'dobírka'}
+											onChange={(e) => setPaymentMethod(e.target.value as 'dobírka')}
+											className="w-4 h-4 md:w-5 md:h-5 accent-marigold"
+										/>
+										<div className="flex-1">
+											<span className="text-sm md:text-base font_nexa">Dobírka (při doručení)</span>
+											<p className="text-xs text-gray-400 mt-1">Zaplatíte při převzetí zásilky</p>
+										</div>
+									</label>
+								</div>
+							</div>
+
 							<button className="hero_btn w-full mb-3 md:mb-4 py-2 md:py-3 text-base md:text-lg lg:text-xl">
 								Pokračovat k pokladně
 							</button>
@@ -161,7 +213,7 @@ export default function CartPage() {
 								<ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm text-gray-300">
 									<li>🚚 Doprava zdarma nad 1500 Kč</li>
 									<li>🎁 Dárek zdarma nad 1000 Kč</li>
-									<li>🌱 Přírodní sójový vosk</li>
+									<li>🌱 Přírodní vosk</li>
 									<li>🇨🇿 Ručně vyrobeno v ČR</li>
 								</ul>
 							</div>

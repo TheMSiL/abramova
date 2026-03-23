@@ -67,20 +67,6 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
 	const productInCart = isInCart(product.id);
 
-	// Если товар уже в корзине, показываем кнопку перехода в корзину
-	if (productInCart && !isAdded) {
-		return (
-			<div className="mb-8 md:mb-12">
-				<Link
-					href="/cart"
-					className="block w-full text-center py-3 md:py-4 text-base md:text-xl border-2 border-marigold bg-marigold/10 text-marigold hover:bg-marigold hover:text-black transition-all font_nexa"
-				>
-					✓ V KOŠÍKU - ZOBRAZIT KOŠÍK
-				</Link>
-			</div>
-		);
-	}
-
 	// После добавления показываем сообщение
 	if (isAdded) {
 		return (
@@ -129,9 +115,13 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 			{/* Add to Cart Button */}
 			<button
 				onClick={handleAddToCart}
-				className="hero_btn w-full py-3 md:py-4 text-lg md:text-xl"
+				disabled={productInCart && !isAdded}
+				className={`w-full py-3 md:py-4 text-lg md:text-xl font_nexa rounded-2xl transition-all ${productInCart && !isAdded
+					? 'bg-marigold text-black border-2 border-marigold cursor-not-allowed'
+					: 'hero_btn'
+					}`}
 			>
-				PŘIDAT DO KOŠÍKU
+				{productInCart && !isAdded ? 'UŽ V KOŠÍKU' : 'PŘIDAT DO KOŠÍKU'}
 			</button>
 		</div>
 	);

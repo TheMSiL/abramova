@@ -11,7 +11,7 @@ import { useState } from 'react';
 export default function CategoriesPage() {
 	const searchParams = useSearchParams();
 	const router = useRouter();
-	const { addToCart } = useCart();
+	const { addToCart, isInCart } = useCart();
 	const tabParam = searchParams.get('tab');
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,6 +41,7 @@ export default function CategoriesPage() {
 	const handleAddToCartWithColor = (selectedColor: string) => {
 		if (selectedProduct) {
 			addToCart(selectedProduct, selectedColor);
+			setIsModalOpen(false);
 			setSelectedProduct(null);
 		}
 	};
@@ -129,9 +130,13 @@ export default function CategoriesPage() {
 									{product.inStock ? (
 										<button
 											onClick={() => handleAddToCart(product)}
-											className="px-3 py-2 md:px-4 md:py-2 border-2 border-marigold text-marigold hover:bg-marigold hover:text-black transition-all duration-300 font_nexa text-sm md:text-base"
+											disabled={isInCart(product.id)}
+											className={`px-3 py-2 md:px-4 md:py-2 border-2 transition-all duration-300 font_nexa text-sm md:text-base ${isInCart(product.id)
+												? 'border-marigold bg-marigold text-black cursor-not-allowed'
+												: 'border-marigold text-marigold hover:bg-marigold hover:text-black'
+												}`}
 										>
-											DO KOŠÍKU
+											{isInCart(product.id) ? 'V KOŠÍKU' : 'DO KOŠÍKU'}
 										</button>
 									) : (
 										<span className="px-3 py-2 md:px-4 md:py-2 border-2 border-gray-600 text-gray-600 font_nexa text-sm md:text-base">

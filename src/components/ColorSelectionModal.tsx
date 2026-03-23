@@ -34,18 +34,17 @@ export default function ColorSelectionModal({
 	const handleAddToCart = () => {
 		if (selectedColor) {
 			onAddToCart(selectedColor);
-			onClose();
 		}
 	};
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80" onClick={onClose}>
 			<div
-				className="bg-zinc-900 border-2 border-marigold rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto"
+				className="bg-black border-2 border-marigold rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto"
 				onClick={(e) => e.stopPropagation()}
 			>
 				{/* Header */}
-				<div className="sticky top-0 bg-zinc-900 border-b border-marigold/30 p-4 md:p-6 flex justify-between items-center">
+				<div className="sticky top-0 bg-black border-b border-marigold/30 p-4 md:p-6 flex justify-between items-center">
 					<h2 className="text-xl md:text-2xl font_nexa text-marigold">Vyberte barvu</h2>
 					<button
 						onClick={onClose}
@@ -81,8 +80,8 @@ export default function ColorSelectionModal({
 							<label
 								key={color.value}
 								className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${selectedColor === color.value
-										? 'border-marigold bg-marigold/10'
-										: 'border-white/20 hover:border-marigold/50'
+									? 'border-marigold bg-marigold/10'
+									: 'border-white/20 hover:border-marigold/50'
 									}`}
 							>
 								<input

@@ -54,6 +54,12 @@ export const products: Product[] = [
 		image: gl_1,
 		description:
 			'Růžová, něžná a trochu drzá. Stojí si tiše na poličce… ale všichni si jí všimnou. Zapálíš knot a najednou má i obyčejný večer pocit, že je sváteční. Protože některé maličkosti prostě umí dělat velkou atmosféru.',
+		colorOptions: [
+			{ name: 'Bílá', value: 'white' },
+			{ name: 'Červená', value: 'red' },
+			{ name: 'Žlutá', value: 'yellow' },
+			{ name: 'Fialová', value: 'purple' },
+		],
 		details: {
 			scent: 'marakuja, papája, tropické ovoce, květiny, růže a pižmo',
 			volume: 'cca 230ml sójového vosku ve 300ml sklenici',
@@ -72,6 +78,12 @@ export const products: Product[] = [
 		image: gl_2,
 		description:
 			'Růžová, něžná a trochu drzá. Stojí si tiše na poličce… ale všichni si jí všimnou. Zapálíš knot a najednou má i obyčejný večer pocit, že je sváteční. Protože některé maličkosti prostě umí dělat velkou atmosféru.',
+		colorOptions: [
+			{ name: 'Bílá', value: 'white' },
+			{ name: 'Červená', value: 'red' },
+			{ name: 'Žlutá', value: 'yellow' },
+			{ name: 'Fialová', value: 'purple' },
+		],
 		details: {
 			scent: 'marakuja, papája, tropické ovoce, květiny, růže a pižmo',
 			volume: 'cca 230ml sójového vosku ve 300ml sklenici',
@@ -90,6 +102,12 @@ export const products: Product[] = [
 		image: gl_3,
 		description:
 			'Růžová, něžná a trochu drzá. Stojí si tiše na poličce… ale všichni si jí všimnou. Zapálíš knot a najednou má i obyčejný večer pocit, že je sváteční. Protože některé maličkosti prostě umí dělat velkou atmosféru.',
+		colorOptions: [
+			{ name: 'Bílá', value: 'white' },
+			{ name: 'Červená', value: 'red' },
+			{ name: 'Žlutá', value: 'yellow' },
+			{ name: 'Fialová', value: 'purple' },
+		],
 		details: {
 			scent: 'marakuja, papája, tropické ovoce, květiny, růže a pižmo',
 			volume: 'cca 230ml sójového vosku ve 300ml sklenici',
@@ -132,6 +150,12 @@ export const products: Product[] = [
 		image: gl_5,
 		description:
 			'Růžová, něžná a trochu drzá. Stojí si tiše na poličce… ale všichni si jí všimnou. Zapálíš knot a najednou má i obyčejný večer pocit, že je sváteční. Protože některé maličkosti prostě umí dělat velkou atmosféru.',
+		colorOptions: [
+			{ name: 'Bílá', value: 'white' },
+			{ name: 'Červená', value: 'red' },
+			{ name: 'Žlutá', value: 'yellow' },
+			{ name: 'Fialová', value: 'purple' },
+		],
 		details: {
 			scent: 'marakuja, papája, tropické ovoce, květiny, růže a pižmo',
 			volume: 'cca 230ml sójového vosku ve 300ml sklenici',
@@ -150,6 +174,12 @@ export const products: Product[] = [
 		image: gl_6,
 		description:
 			'Růžová, něžná a trochu drzá. Stojí si tiše na poličce… ale všichni si jí všimnou. Zapálíš knot a najednou má i obyčejný večer pocit, že je sváteční. Protože některé maličkosti prostě umí dělat velkou atmosféru.',
+		colorOptions: [
+			{ name: 'Bílá', value: 'white' },
+			{ name: 'Červená', value: 'red' },
+			{ name: 'Žlutá', value: 'yellow' },
+			{ name: 'Fialová', value: 'purple' },
+		],
 		details: {
 			scent: 'marakuja, papája, tropické ovoce, květiny, růže a pižmo',
 			volume: 'cca 230ml sójového vosku ve 300ml sklenici',

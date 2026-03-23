@@ -129,11 +129,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 	};
 
 	const isInCart = (productId: string, selectedColor?: string) => {
-		const cartKey = selectedColor ? `${productId}-${selectedColor}` : productId;
-		return cart.some((item) => {
-			const itemKey = item.selectedColor ? `${item.id}-${item.selectedColor}` : item.id;
-			return itemKey === cartKey;
-		});
+		if (selectedColor) {
+			// Проверяем точное совпадение с цветом
+			const cartKey = `${productId}-${selectedColor}`;
+			return cart.some((item) => {
+				const itemKey = item.selectedColor ? `${item.id}-${item.selectedColor}` : item.id;
+				return itemKey === cartKey;
+			});
+		} else {
+			// Проверяем наличие товара с любым вариантом (с любым цветом или без)
+			return cart.some((item) => item.id === productId);
+		}
 	};
 
 	return (
