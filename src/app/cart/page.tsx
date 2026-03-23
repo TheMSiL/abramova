@@ -154,11 +154,10 @@ export default function CartPage() {
 								</h3>
 								<div className="space-y-2 md:space-y-3">
 									<label
-										className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${
-											paymentMethod === 'online'
+										className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${paymentMethod === 'online'
 												? 'border-marigold bg-marigold/10'
 												: 'border-white/20 hover:border-marigold/50'
-										}`}
+											}`}
 									>
 										<input
 											type="radio"
@@ -175,11 +174,10 @@ export default function CartPage() {
 									</label>
 
 									<label
-										className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${
-											paymentMethod === 'dobírka'
+										className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${paymentMethod === 'dobírka'
 												? 'border-marigold bg-marigold/10'
 												: 'border-white/20 hover:border-marigold/50'
-										}`}
+											}`}
 									>
 										<input
 											type="radio"
