@@ -60,7 +60,7 @@ body {
 
 @layer components {
 	.content_container {
-		@apply max-w-[95%] sm:max-w-[90%] lg:max-w-[85%] mx-auto px-3 sm:px-4 md:px-5;
+		@apply max-w-[95%] sm:max-w-[90%] lg:max-w-[85%] mx-auto px-3 sm:px-4 md:px-5 w-full;
 	}
 
 	.font_nexa {

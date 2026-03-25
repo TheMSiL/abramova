@@ -1,12 +1,83 @@
 'use client';
 
 import { useCart } from '@/context/CartContext';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
 export default function CartPage() {
 	const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
 	const [paymentMethod, setPaymentMethod] = useState<'online' | 'dobírka'>('online');
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [orderStatus, setOrderStatus] = useState<'idle' | 'success' | 'error'>('idle');
+	const [deliveryForm, setDeliveryForm] = useState({
+		name: '',
+		surname: '',
+		email: '',
+		phone: '',
+		street: '',
+		city: '',
+		zip: '',
+		note: ''
+	});
+
+	const handleCheckout = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		// Простая валидация
+		if (!deliveryForm.name || !deliveryForm.surname || !deliveryForm.email ||
+			!deliveryForm.phone || !deliveryForm.street || !deliveryForm.city || !deliveryForm.zip) {
+			alert('Vyplňte prosím všechna povinná pole');
+			return;
+		}
+
+		setIsSubmitting(true);
+		setOrderStatus('idle');
+
+		try {
+			const response = await fetch('/api/send-telegram', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					deliveryForm,
+					paymentMethod,
+					cart,
+					totalPrice: getTotalPrice(),
+				}),
+			});
+
+			const data = await response.json();
+
+			if (response.ok) {
+				setOrderStatus('success');
+				// Очищаем корзину после успешного заказа
+				setTimeout(() => {
+					clearCart();
+					setDeliveryForm({
+						name: '',
+						surname: '',
+						email: '',
+						phone: '',
+						street: '',
+						city: '',
+						zip: '',
+						note: ''
+					});
+				}, 2000);
+			} else {
+				setOrderStatus('error');
+				alert(data.error || 'Něco se pokazilo. Zkuste to prosím znovu.');
+			}
+		} catch (error) {
+			console.error('Chyba při odesílání objednávky:', error);
+			setOrderStatus('error');
+			alert('Nepodařilo se odeslat objednávku. Zkontrolujte připojení k internetu.');
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
 	if (cart.length === 0) {
 		return (
@@ -20,7 +91,7 @@ export default function CartPage() {
 						<p className="text-sm md:text-base text-gray-500 mb-6 md:mb-8">
 							Přidejte produkty do košíku a začněte nakupovat
 						</p>
-						<Link href="/categories" className="inline-block hero_btn font_nexa text-base md:text-lg lg:text-xl">
+						<Link href="/e-shop" className="inline-block hero_btn font_nexa text-base md:text-lg lg:text-xl">
 							Procházet Produkty
 						</Link>
 					</div>
@@ -56,8 +127,13 @@ export default function CartPage() {
 									className="border-2 border-marigold/30 p-4 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6"
 								>
 									{/* Product Image */}
-									<div className="w-24 h-24 md:w-32 md:h-32 bg-gray-900 flex items-center justify-center text-3xl md:text-4xl flex-shrink-0 mx-auto md:mx-0">
-										🕯️
+									<div className="w-48 h-48 md:w-32 md:h-32 bg-gray-900 flex-shrink-0 mx-auto md:mx-0 relative overflow-hidden border border-marigold/20">
+										<Image
+											src={item.image}
+											alt={item.name}
+											fill
+											className="object-cover"
+										/>
 									</div>
 
 									{/* Product Info */}
@@ -147,6 +223,84 @@ export default function CartPage() {
 								</div>
 							</div>
 
+
+
+							{/* Delivery Form */}
+							<div className="mb-4 md:mb-6 pb-4 md:pb-6 border-b-2 border-gray-700">
+								<h3 className="font_nexa text-marigold mb-3 md:mb-4 text-base md:text-lg">
+									Doručovací údaje:
+								</h3>
+								<div className="space-y-3">
+									<div className="grid grid-cols-2 gap-3">
+										<input
+											type="text"
+											placeholder="Jméno *"
+											value={deliveryForm.name}
+											onChange={(e) => setDeliveryForm({ ...deliveryForm, name: e.target.value })}
+											className="w-full bg-transparent border border-marigold/30 text-white p-2 md:p-3 text-sm md:text-base focus:border-marigold focus:outline-none"
+											required
+										/>
+										<input
+											type="text"
+											placeholder="Příjmení *"
+											value={deliveryForm.surname}
+											onChange={(e) => setDeliveryForm({ ...deliveryForm, surname: e.target.value })}
+											className="w-full bg-transparent border border-marigold/30 text-white p-2 md:p-3 text-sm md:text-base focus:border-marigold focus:outline-none"
+											required
+										/>
+									</div>
+									<input
+										type="email"
+										placeholder="Email *"
+										value={deliveryForm.email}
+										onChange={(e) => setDeliveryForm({ ...deliveryForm, email: e.target.value })}
+										className="w-full bg-transparent border border-marigold/30 text-white p-2 md:p-3 text-sm md:text-base focus:border-marigold focus:outline-none"
+										required
+									/>
+									<input
+										type="tel"
+										placeholder="Telefon *"
+										value={deliveryForm.phone}
+										onChange={(e) => setDeliveryForm({ ...deliveryForm, phone: e.target.value })}
+										className="w-full bg-transparent border border-marigold/30 text-white p-2 md:p-3 text-sm md:text-base focus:border-marigold focus:outline-none"
+										required
+									/>
+									<input
+										type="text"
+										placeholder="Ulice a číslo popisné *"
+										value={deliveryForm.street}
+										onChange={(e) => setDeliveryForm({ ...deliveryForm, street: e.target.value })}
+										className="w-full bg-transparent border border-marigold/30 text-white p-2 md:p-3 text-sm md:text-base focus:border-marigold focus:outline-none"
+										required
+									/>
+									<div className="grid grid-cols-2 gap-3">
+										<input
+											type="text"
+											placeholder="Město *"
+											value={deliveryForm.city}
+											onChange={(e) => setDeliveryForm({ ...deliveryForm, city: e.target.value })}
+											className="w-full bg-transparent border border-marigold/30 text-white p-2 md:p-3 text-sm md:text-base focus:border-marigold focus:outline-none"
+											required
+										/>
+										<input
+											type="text"
+											placeholder="PSČ *"
+											value={deliveryForm.zip}
+											onChange={(e) => setDeliveryForm({ ...deliveryForm, zip: e.target.value })}
+											className="w-full bg-transparent border border-marigold/30 text-white p-2 md:p-3 text-sm md:text-base focus:border-marigold focus:outline-none"
+											required
+										/>
+									</div>
+									<textarea
+										placeholder="Poznámka k objednávce (volitelné)"
+										value={deliveryForm.note}
+										onChange={(e) => setDeliveryForm({ ...deliveryForm, note: e.target.value })}
+										className="w-full bg-transparent border border-marigold/30 text-white p-2 md:p-3 text-sm md:text-base focus:border-marigold focus:outline-none resize-none"
+										rows={3}
+									/>
+								</div>
+							</div>
+
 							{/* Payment Method Selection */}
 							<div className="mb-4 md:mb-6 pb-4 md:pb-6 border-b-2 border-gray-700">
 								<h3 className="font_nexa text-marigold mb-3 md:mb-4 text-base md:text-lg">
@@ -155,8 +309,8 @@ export default function CartPage() {
 								<div className="space-y-2 md:space-y-3">
 									<label
 										className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${paymentMethod === 'online'
-												? 'border-marigold bg-marigold/10'
-												: 'border-white/20 hover:border-marigold/50'
+											? 'border-marigold bg-marigold/10'
+											: 'border-white/20 hover:border-marigold/50'
 											}`}
 									>
 										<input
@@ -175,8 +329,8 @@ export default function CartPage() {
 
 									<label
 										className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${paymentMethod === 'dobírka'
-												? 'border-marigold bg-marigold/10'
-												: 'border-white/20 hover:border-marigold/50'
+											? 'border-marigold bg-marigold/10'
+											: 'border-white/20 hover:border-marigold/50'
 											}`}
 									>
 										<input
@@ -195,9 +349,26 @@ export default function CartPage() {
 								</div>
 							</div>
 
-							<button className="hero_btn w-full mb-3 md:mb-4 py-2 md:py-3 text-base md:text-lg lg:text-xl">
-								Pokračovat k pokladně
+							<button
+								onClick={handleCheckout}
+								disabled={isSubmitting}
+								className={`hero_btn w-full mb-3 md:mb-4 py-2 md:py-3 text-base md:text-lg lg:text-xl ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+									}`}
+							>
+								{isSubmitting ? 'Odesílání...' : orderStatus === 'success' ? '✓ Objednávka odeslána!' : 'Pokračovat k pokladně'}
 							</button>
+
+							{orderStatus === 'success' && (
+								<div className="mb-3 p-3 bg-green-600/20 border border-green-600 text-green-400 text-center text-sm md:text-base">
+									✓ Objednávka byla úspěšně odeslána! Brzy vás budeme kontaktovat.
+								</div>
+							)}
+
+							{orderStatus === 'error' && (
+								<div className="mb-3 p-3 bg-red-600/20 border border-red-600 text-red-400 text-center text-sm md:text-base">
+									✗ Chyba při odesílání. Zkuste to prosím znovu.
+								</div>
+							)}
 
 							<button
 								onClick={clearCart}
@@ -221,7 +392,7 @@ export default function CartPage() {
 
 				{/* Continue Shopping */}
 				<div className="mt-8 md:mt-12 text-center">
-					<Link href="/categories" className="inline-block hero_btn font_nexa text-base md:text-lg lg:text-xl">
+					<Link href="/e-shop" className="inline-block hero_btn font_nexa text-base md:text-lg lg:text-xl">
 						← Pokračovat v nákupu
 					</Link>
 				</div>

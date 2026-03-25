@@ -9,17 +9,17 @@ const items = [
 	{
 		title: 'SVÍČKA VE SKLE',
 		img: img_1,
-		path: '/categories?tab=glass'
+		path: '/e-shop?tab=sklo'
 	},
 	{
 		title: 'DESIGNOVÉ SVÍČKY',
 		img: img_2,
-		path: '/categories?tab=designer-candles'
+		path: '/e-shop?tab=designove'
 	},
 	{
 		title: 'DEKORATIVNÍ SVÍČKY V KVĚTINÁČI ',
 		img: img_3,
-		path: '/categories?tab=decorate'
+		path: '/e-shop?tab=dekorativni'
 	}
 ]
 

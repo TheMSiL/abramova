@@ -6,16 +6,15 @@ import React, { useEffect, useState } from 'react'
 
 import cart from '@/assets/header/cart.svg'
 import home from '@/assets/header/home.svg'
-import search from '@/assets/header/search.svg'
 import CartBadge from '@/components/CartBadge'
 import { useCart } from '@/context/CartContext'
-import { Product, products } from '@/data/products'
+import { Product } from '@/types'
 import Image from 'next/image'
 
 const nav = [
 	{
 		name: 'e-shop',
-		href: '/categories'
+		href: '/e-shop'
 	},
 	{
 		name: 'o mně',
@@ -40,8 +39,10 @@ const Header: React.FC = () => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 	const [searchQuery, setSearchQuery] = useState('')
 	const [debouncedQuery, setDebouncedQuery] = useState('')
+	const [searchResults, setSearchResults] = useState<Product[]>([])
+	const [isSearching, setIsSearching] = useState(false)
 
-	// Debounced search (3 seconds)
+	// Debounced search (1.5 seconds)
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setDebouncedQuery(searchQuery)
@@ -50,30 +51,38 @@ const Header: React.FC = () => {
 		return () => clearTimeout(timer)
 	}, [searchQuery])
 
-	// Calculate search results from debounced query
-	const searchResults = React.useMemo(() => {
-		if (!debouncedQuery.trim()) return []
+	// Fetch search results when debounced query changes
+	useEffect(() => {
+		const fetchSearchResults = async () => {
+			if (!debouncedQuery.trim()) {
+				setSearchResults([])
+				return
+			}
 
-		return products.filter(
-			(product) =>
-				product.name.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-				product.id.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
-				product.description.toLowerCase().includes(debouncedQuery.toLowerCase())
-		)
+			setIsSearching(true)
+			try {
+				const response = await fetch(`/api/products?search=${encodeURIComponent(debouncedQuery)}`)
+				if (response.ok) {
+					const data = await response.json()
+					setSearchResults(data)
+				}
+			} catch (error) {
+				console.error('Error fetching search results:', error)
+			} finally {
+				setIsSearching(false)
+			}
+		}
+
+		fetchSearchResults()
 	}, [debouncedQuery])
-
-	const isSearching = searchQuery.trim() !== '' && searchQuery !== debouncedQuery
-
-	const handleProductClick = (productId: string) => {
-		router.push(`/product/${productId}`)
-		setIsSearchOpen(false)
-		setSearchQuery('')
-		setDebouncedQuery('')
-	}
 
 	const handleAddToCart = (e: React.MouseEvent, product: Product) => {
 		e.stopPropagation()
 		addToCart(product)
+		// Close search after adding to cart
+		setIsSearchOpen(false)
+		setSearchQuery('')
+		setDebouncedQuery('')
 	}
 
 	return (
@@ -82,7 +91,7 @@ const Header: React.FC = () => {
 				<Link href='/' className=''>
 					<Image src={home} alt='home' className='w-6 h-6 md:w-7 md:h-7 cursor-pointer duration-300 hover:opacity-80' />
 				</Link>
-				
+
 				{/* Desktop Navigation */}
 				<nav className='hidden lg:flex flex-1 items-center justify-center mx-8'>
 					<ul className='flex items-center gap-4 xl:gap-10 font_nexa text-base xl:text-xl justify-center'>
@@ -118,20 +127,21 @@ const Header: React.FC = () => {
 						})}
 					</ul>
 				</nav>
-				
+
 				{/* Icons */}
 				<div className='flex items-center gap-3 md:gap-5'>
-					<button
+					{/* Search button temporarily hidden */}
+					{/* <button
 						onClick={() => setIsSearchOpen(true)}
 						className='w-6 h-6 md:w-7 md:h-7 duration-300 hover:opacity-80'
 					>
 						<Image src={search} alt='search' className='cursor-pointer' />
-					</button>
+					</button> */}
 					<Link href='/cart' className='w-6 h-6 md:w-7 md:h-7 duration-300 hover:opacity-80 relative'>
 						<Image src={cart} alt='cart' className='cursor-pointer' />
 						<CartBadge />
 					</Link>
-					
+
 					{/* Mobile Menu Button */}
 					<button
 						onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -143,7 +153,7 @@ const Header: React.FC = () => {
 					</button>
 				</div>
 			</div>
-			
+
 			{/* Mobile Menu */}
 			{isMobileMenuOpen && (
 				<div className='lg:hidden border-t border-marigold/30 mt-3'>
@@ -241,14 +251,16 @@ const Header: React.FC = () => {
 										{searchResults.map((product) => (
 											<div
 												key={product.id}
-												onClick={() => handleProductClick(product.id)}
-												className='flex gap-4 p-4 bg-black border border-marigold/30 hover:border-marigold cursor-pointer transition-all group'
+												className='flex gap-4 p-4 bg-black border border-marigold/30 hover:border-marigold transition-all group'
 											>
 												{/* Product Image */}
-												<div className='w-24 h-24 flex-shrink-0 bg-gradient-to-br from-marigold/20 to-nugget/20 border border-marigold/30 flex items-center justify-center'>
-													<span className='text-4xl font_nexa text-marigold'>
-														{product.name.charAt(0)}
-													</span>
+												<div className='w-24 h-24 flex-shrink-0 bg-gray-900 border border-marigold/30 relative overflow-hidden'>
+													<Image
+														src={product.image}
+														alt={product.name}
+														fill
+														className='object-cover'
+													/>
 												</div>
 
 												{/* Product Info */}

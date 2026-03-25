@@ -1,29 +1,59 @@
 'use client';
 
-import { products } from '@/data/products';
+import { useCart } from '@/context/CartContext';
+import { Product } from '@/types';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function SearchPage() {
 	const searchParams = useSearchParams();
 	const query = searchParams.get('q') || '';
 
-	// Используем useMemo для вычисления результатов поиска
-	const searchResults = useMemo(() => {
-		if (query.trim()) {
-			return products.filter(
-				(product) =>
-					product.name.toLowerCase().includes(query.toLowerCase()) ||
-					product.id.toLowerCase().includes(query.toLowerCase()) ||
-					product.description.toLowerCase().includes(query.toLowerCase())
-			);
+	const [products, setProducts] = useState<Product[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	const { cart, addToCart } = useCart();
+
+	const isInCart = (productId: string) => {
+		return cart.some((item) => item.id === productId);
+	};
+
+	const handleAddToCart = (product: Product) => {
+		if (product.colorOptions && product.colorOptions.length > 0) {
+			// If product has color options, add with first color by default
+			addToCart(product, product.colorOptions[0].value);
+		} else {
+			addToCart(product);
 		}
-		return products;
+	};
+
+	// Загружаем результаты поиска
+	useEffect(() => {
+		const fetchProducts = async () => {
+			try {
+				setLoading(true);
+				const url = query
+					? `/api/products?search=${encodeURIComponent(query)}`
+					: '/api/products';
+				const response = await fetch(url);
+				if (response.ok) {
+					const data = await response.json();
+					setProducts(data);
+				}
+			} catch (error) {
+				console.error('Error fetching products:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchProducts();
 	}, [query]);
 
 	return (
-		<main className="py-20">
+		<main className="py-20 bg-black min-h-screen">
 			<div className="content_container">
 				{/* Search Header */}
 				<div className="text-center mb-16">
@@ -35,26 +65,39 @@ export default function SearchPage() {
 							Hledáte: <span className="text-marigold font_nexa">&quot;{query}&quot;</span>
 						</p>
 					)}
-					<p className="text-gray-400 mt-2">
-						Nalezeno {searchResults.length} {searchResults.length === 1 ? 'produkt' : searchResults.length < 5 ? 'produkty' : 'produktů'}
-					</p>
+					{!loading && (
+						<p className="text-gray-400 mt-2">
+							Nalezeno {products.length} {products.length === 1 ? 'produkt' : products.length < 5 ? 'produkty' : 'produktů'}
+						</p>
+					)}
 				</div>
 
+				{/* Loading State */}
+				{loading && (
+					<div className="text-center py-20">
+						<p className="text-xl text-gray-400">
+							Načítání produktů...
+						</p>
+					</div>
+				)}
+
 				{/* Products Grid */}
-				{searchResults.length > 0 ? (
+				{!loading && products.length > 0 ? (
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-						{searchResults.map((product) => (
-							<Link
-								href={`/product/${product.id}`}
+						{products.map((product) => (
+							<div
 								key={product.id}
 								className="group border-2 border-marigold/30 hover:border-marigold transition-all duration-300 overflow-hidden"
 							>
 								{/* Product Image */}
 								<div className="relative h-[400px] overflow-hidden bg-gray-900">
+									<Image
+										src={product.image}
+										alt={product.name}
+										fill
+										className="object-cover"
+									/>
 									<div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-									<div className="w-full h-full flex items-center justify-center text-6xl">
-										🕯️
-									</div>
 									{!product.inStock && (
 										<div className="absolute top-4 right-4 z-20 bg-red-600 text-white px-4 py-2 text-sm font_nexa">
 											VYPRODÁNO
@@ -87,9 +130,16 @@ export default function SearchPage() {
 											{product.price} Kč
 										</span>
 										{product.inStock ? (
-											<span className="px-4 py-2 border-2 border-marigold text-marigold group-hover:bg-marigold group-hover:text-black transition-all duration-300 font_nexa">
-												DETAIL
-											</span>
+											<button
+												onClick={() => handleAddToCart(product)}
+												disabled={isInCart(product.id)}
+												className={`px-4 py-2 border-2 transition-all duration-300 font_nexa ${isInCart(product.id)
+													? 'border-marigold bg-marigold text-black cursor-not-allowed'
+													: 'border-marigold text-marigold hover:bg-marigold hover:text-black'
+													}`}
+											>
+												{isInCart(product.id) ? 'V KOŠÍKU' : 'DO KOŠÍKU'}
+											</button>
 										) : (
 											<span className="px-4 py-2 border-2 border-gray-600 text-gray-600 font_nexa">
 												VYPRODÁNO
@@ -97,7 +147,7 @@ export default function SearchPage() {
 										)}
 									</div>
 								</div>
-							</Link>
+							</div>
 						))}
 					</div>
 				) : (
@@ -109,14 +159,14 @@ export default function SearchPage() {
 						<p className="text-gray-500 mb-8">
 							Zkuste změnit hledaný výraz nebo procházet naše kategorie
 						</p>
-						<Link href="/categories" className="inline-block hero_btn font_nexa">
+						<Link href="/e-shop" className="inline-block hero_btn font_nexa">
 							Procházet Kategorie
 						</Link>
 					</div>
 				)}
 
 				{/* Back Button */}
-				{searchResults.length > 0 && (
+				{products.length > 0 && (
 					<div className="mt-16 text-center">
 						<Link href="/" className="inline-block hero_btn font_nexa">
 							← Zpět do obchodu

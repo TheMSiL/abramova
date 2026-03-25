@@ -1,9 +1,9 @@
 'use client';
 
 import { useCart } from '@/context/CartContext';
-import { Product } from '@/data/products';
+import { Product } from '@/types';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 
 interface AddToCartButtonProps {
 	product: Product;
@@ -13,11 +13,12 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 	const { addToCartWithQuantity, isInCart } = useCart();
 	const [quantity, setQuantity] = useState(1);
 	const [isAdded, setIsAdded] = useState(false);
-	const [mounted, setMounted] = useState(false);
 
-	useEffect(() => {
-		setMounted(true);
-	}, []);
+	const productInCart = useSyncExternalStore(
+		() => () => { },
+		() => isInCart(product.id),
+		() => false
+	);
 
 	const handleAddToCart = () => {
 		addToCartWithQuantity(product, quantity);
@@ -37,37 +38,6 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 		return null;
 	}
 
-	// Показываем форму выбора количества до монтирования
-	if (!mounted) {
-		return (
-			<div className="mb-8 md:mb-12 space-y-3 md:space-y-4">
-				<div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-					<span className="text-gray-300 font_nexa text-base md:text-lg">Množství:</span>
-					<div className="flex items-center border-2 border-marigold/50 w-full sm:w-auto">
-						<button className="px-3 md:px-4 py-2 text-xl md:text-2xl text-marigold hover:bg-marigold/10 transition-all flex-1 sm:flex-none">
-							−
-						</button>
-						<span className="px-4 md:px-6 py-2 text-lg md:text-xl font_nexa text-white min-w-[60px] text-center flex-1 sm:flex-none">
-							1
-						</span>
-						<button className="px-3 md:px-4 py-2 text-xl md:text-2xl text-marigold hover:bg-marigold/10 transition-all flex-1 sm:flex-none">
-							+
-						</button>
-					</div>
-					<span className="text-gray-400 sm:ml-auto text-base md:text-lg">
-						{product.price} Kč
-					</span>
-				</div>
-				<button className="hero_btn w-full py-3 md:py-4 text-lg md:text-xl">
-					PŘIDAT DO KOŠÍKU
-				</button>
-			</div>
-		);
-	}
-
-	const productInCart = isInCart(product.id);
-
-	// После добавления показываем сообщение
 	if (isAdded) {
 		return (
 			<div className="mb-8 md:mb-12 space-y-3 md:space-y-4">
@@ -84,10 +54,8 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 		);
 	}
 
-	// Форма выбора количества и добавления в корзину
 	return (
 		<div className="mb-8 md:mb-12 space-y-3 md:space-y-4">
-			{/* Quantity Selector */}
 			<div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
 				<span className="text-gray-300 font_nexa text-base md:text-lg">Množství:</span>
 				<div className="flex items-center border-2 border-marigold/50 w-full sm:w-auto">
@@ -112,7 +80,6 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 				</span>
 			</div>
 
-			{/* Add to Cart Button */}
 			<button
 				onClick={handleAddToCart}
 				disabled={productInCart && !isAdded}

@@ -1,6 +1,6 @@
 'use client';
 
-import { Product } from '@/data/products';
+import { Product } from '@/types';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface CartItem extends Product {
@@ -18,6 +18,7 @@ interface CartContextType {
 	getTotalItems: () => number;
 	getTotalPrice: () => number;
 	isInCart: (productId: string, selectedColor?: string) => boolean;
+	getProductColorsInCart: (productId: string) => string[];
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -142,6 +143,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 		}
 	};
 
+	const getProductColorsInCart = (productId: string): string[] => {
+		return cart
+			.filter((item) => item.id === productId && item.selectedColor)
+			.map((item) => item.selectedColor as string);
+	};
+
 	return (
 		<CartContext.Provider
 			value={{
@@ -154,6 +161,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 				getTotalItems,
 				getTotalPrice,
 				isInCart,
+				getProductColorsInCart,
 			}}
 		>
 			{children}

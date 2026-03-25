@@ -16,6 +16,7 @@ interface ColorSelectionModalProps {
 	productPrice: number;
 	colors: ColorOption[];
 	onAddToCart: (selectedColor: string) => void;
+	colorsInCart?: string[]; // Цвета, которые уже в корзине
 }
 
 export default function ColorSelectionModal({
@@ -26,6 +27,7 @@ export default function ColorSelectionModal({
 	productPrice,
 	colors,
 	onAddToCart,
+	colorsInCart = [],
 }: ColorSelectionModalProps) {
 	const [selectedColor, setSelectedColor] = useState<string>(colors[0]?.value || '');
 
@@ -76,25 +78,35 @@ export default function ColorSelectionModal({
 						<label className="block text-sm md:text-base text-white/80 mb-2">
 							Barva růže:
 						</label>
-						{colors.map((color) => (
-							<label
-								key={color.value}
-								className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${selectedColor === color.value
-									? 'border-marigold bg-marigold/10'
-									: 'border-white/20 hover:border-marigold/50'
-									}`}
-							>
-								<input
-									type="radio"
-									name="color"
-									value={color.value}
-									checked={selectedColor === color.value}
-									onChange={(e) => setSelectedColor(e.target.value)}
-									className="w-5 h-5 accent-marigold"
-								/>
-								<span className="text-base md:text-lg">{color.name}</span>
-							</label>
-						))}
+						{colors.map((color) => {
+							const isInCart = colorsInCart.includes(color.value);
+							return (
+								<label
+									key={color.value}
+									className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${selectedColor === color.value
+											? 'border-marigold bg-marigold/10'
+											: isInCart
+												? 'border-green-600/50 bg-green-600/5'
+												: 'border-white/20 hover:border-marigold/50'
+										}`}
+								>
+									<input
+										type="radio"
+										name="color"
+										value={color.value}
+										checked={selectedColor === color.value}
+										onChange={(e) => setSelectedColor(e.target.value)}
+										className="w-5 h-5 accent-marigold"
+									/>
+									<span className="text-base md:text-lg flex-1">{color.name}</span>
+									{isInCart && (
+										<span className="text-xs text-green-500 bg-green-600/20 px-2 py-1 rounded">
+											V košíku
+										</span>
+									)}
+								</label>
+							);
+						})}
 					</div>
 
 					{/* Add to Cart Button */}
