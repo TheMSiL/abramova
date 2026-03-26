@@ -1,15 +1,22 @@
 'use client';
 
+import CheckoutForm from '@/components/CheckoutForm';
 import { useCart } from '@/context/CartContext';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function CartPage() {
 	const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
 	const [paymentMethod, setPaymentMethod] = useState<'online' | 'dobírka'>('online');
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [orderStatus, setOrderStatus] = useState<'idle' | 'success' | 'error'>('idle');
+	const [clientSecret, setClientSecret] = useState('');
+	const [isMounted, setIsMounted] = useState(false);
 	const [deliveryForm, setDeliveryForm] = useState({
 		name: '',
 		surname: '',
@@ -20,6 +27,30 @@ export default function CartPage() {
 		zip: '',
 		note: ''
 	});
+
+	const totalWithShipping = getTotalPrice() >= 1500 ? getTotalPrice() : getTotalPrice() + 150;
+
+	// Предотвращаем hydration ошибку
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	// Создаем Payment Intent при выборе онлайн оплаты
+	useEffect(() => {
+		if (paymentMethod === 'online' && cart.length > 0) {
+			fetch('/api/create-payment-intent', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					amount: totalWithShipping,
+					currency: 'czk',
+				}),
+			})
+				.then((res) => res.json())
+				.then((data) => setClientSecret(data.clientSecret))
+				.catch((error) => console.error('Chyba při vytváření platby:', error));
+		}
+	}, [paymentMethod, cart.length, totalWithShipping]);
 
 	const handleCheckout = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -78,6 +109,22 @@ export default function CartPage() {
 			setIsSubmitting(false);
 		}
 	};
+
+	// Предотвращаем hydration ошибку - показываем loading до монтирования
+	if (!isMounted) {
+		return (
+			<main className="py-10 md:py-20 flex-1">
+				<div className="content_container">
+					<div className="text-center py-10 md:py-20 px-4">
+						<div className="text-4xl md:text-6xl mb-4 md:mb-6">🛒</div>
+						<h1 className="text-2xl md:text-3xl lg:text-4xl font_nexa text-gray-400 mb-3 md:mb-4">
+							Načítání košíku...
+						</h1>
+					</div>
+				</div>
+			</main>
+		);
+	}
 
 	if (cart.length === 0) {
 		return (
@@ -322,7 +369,7 @@ export default function CartPage() {
 											className="w-4 h-4 md:w-5 md:h-5 accent-marigold"
 										/>
 										<div className="flex-1">
-											<span className="text-sm md:text-base font_nexa">Google Pay / Apple Pay</span>
+											<span className="text-sm md:text-base font_nexa">Google Pay / Kartou</span>
 											<p className="text-xs text-gray-400 mt-1">Rychlá a bezpečná online platba</p>
 										</div>
 									</label>
@@ -349,14 +396,49 @@ export default function CartPage() {
 								</div>
 							</div>
 
-							<button
-								onClick={handleCheckout}
-								disabled={isSubmitting}
-								className={`hero_btn w-full mb-3 md:mb-4 py-2 md:py-3 text-base md:text-lg lg:text-xl ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-									}`}
-							>
-								{isSubmitting ? 'Odesílání...' : orderStatus === 'success' ? '✓ Objednávka odeslána!' : 'Pokračovat k pokladně'}
-							</button>
+							{/* Stripe Payment Form or Cash on Delivery */}
+							{paymentMethod === 'online' ? (
+								<div className="mb-4 md:mb-6">
+									{clientSecret && (
+										<Elements
+											options={{
+												clientSecret,
+												appearance: {
+													theme: 'night',
+													variables: {
+														colorPrimary: '#FFD700',
+														colorBackground: '#000000',
+														colorText: '#ffffff',
+														borderRadius: '0px',
+													},
+												},
+											}}
+											stripe={stripePromise}
+										>
+											<CheckoutForm
+												amount={totalWithShipping}
+												deliveryForm={deliveryForm}
+												cart={cart}
+												totalPrice={getTotalPrice()}
+											/>
+										</Elements>
+									)}
+									{!clientSecret && (
+										<div className="text-center text-gray-400 py-4">
+											Načítání platební brány...
+										</div>
+									)}
+								</div>
+							) : (
+								<button
+									onClick={handleCheckout}
+									disabled={isSubmitting}
+									className={`hero_btn w-full mb-3 md:mb-4 py-2 md:py-3 text-base md:text-lg lg:text-xl ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+										}`}
+								>
+									{isSubmitting ? 'Odesílání...' : orderStatus === 'success' ? '✓ Objednávka odeslána!' : 'Odeslat objednávku'}
+								</button>
+							)}
 
 							{orderStatus === 'success' && (
 								<div className="mb-3 p-3 bg-green-600/20 border border-green-600 text-green-400 text-center text-sm md:text-base">
@@ -370,12 +452,18 @@ export default function CartPage() {
 								</div>
 							)}
 
-							<button
-								onClick={clearCart}
-								className="w-full px-4 py-2 border-2 border-gray-600 text-gray-400 hover:border-red-600 hover:text-red-600 transition-all text-sm md:text-base"
-							>
-								Vyprázdnit košík
-							</button>
+							{paymentMethod === 'dobírka' && (
+								<button
+									onClick={() => {
+										if (confirm('Opravdu chcete vyprázdnit košík?')) {
+											clearCart();
+										}
+									}}
+									className="w-full px-4 py-2 border-2 border-gray-600 text-gray-400 hover:border-red-600 hover:text-red-600 transition-all text-sm md:text-base"
+								>
+									Vyprázdnit košík
+								</button>
+							)}
 
 							<div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t-2 border-gray-700">
 								<h3 className="font_nexa text-marigold mb-2 md:mb-3 text-sm md:text-base">Výhody:</h3>

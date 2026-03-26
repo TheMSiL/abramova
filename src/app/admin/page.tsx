@@ -63,7 +63,6 @@ export default function AdminPage() {
 			await fetchProducts();
 		} catch (error) {
 			console.error('Error deleting product:', error);
-			alert('Chyba při mazání produktu');
 		}
 	};
 
@@ -174,7 +173,7 @@ export default function AdminPage() {
 					<div className="bg-black border-2 border-red-500/50 max-w-md w-full p-8">
 						<h2 className="text-2xl font_nexa text-marigold mb-4">Smazat produkt?</h2>
 						<p className="text-gray-300 mb-2">Opravdu chcete smazat tento produkt?</p>
-						<p className="text-marigold font_nexa mb-8">"{deleteModal.productName}"</p>
+						<p className="text-marigold font_nexa mb-8">{deleteModal.productName}</p>
 						<div className="flex gap-4">
 							<button
 								onClick={closeDeleteModal}
