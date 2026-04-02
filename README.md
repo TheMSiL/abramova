@@ -1,36 +1,227 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🕯️ Abramova Svíčky
 
-## Getting Started
+Ručně vyráběné sójové svíčky z přírodního vosku. E-shop postavený na Next.js 16 s PostgreSQL.
 
-First, run the development server:
+## 🚀 Быстрый старт (локальная разработка)
 
 ```bash
+# Установите зависимости
+npm install
+
+# Настройте .env.local
+cp .env.example .env.local
+# Отредактируйте DATABASE_URL и другие переменные
+
+# Примените миграции
+npx prisma migrate deploy
+
+# Загрузите данные
+npm run db:seed
+
+# Запустите dev сервер
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Откройте [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📚 Документация
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 📘 **[VPS_DEPLOY_GUIDE.md](VPS_DEPLOY_GUIDE.md)** - Полная инструкция по развертыванию на VPS
+- ⚡ **[QUICK_START.md](QUICK_START.md)** - Краткая памятка по развертыванию
+- 📦 **[DEPLOY_INSTRUCTIONS.md](DEPLOY_INSTRUCTIONS.md)** - Инструкции по работе с бэкапами
+- 🔍 **[SEO_DOCUMENTATION.md](SEO_DOCUMENTATION.md)** - SEO оптимизация и настройка
 
-## Learn More
+## 🛠️ Технологии
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** Next.js 16 (App Router)
+- **Database:** PostgreSQL 18
+- **ORM:** Prisma 7
+- **Styling:** Tailwind CSS
+- **Payments:** Stripe
+- **Deployment:** PM2 + Nginx
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📁 Структура проекта
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+abramova/
+├── src/
+│   ├── app/              # Next.js App Router страницы
+│   │   ├── api/          # API Routes
+│   │   ├── admin/        # Админ-панель (защищена паролем)
+│   │   ├── e-shop/       # Каталог товаров
+│   │   └── ...
+│   ├── components/       # React компоненты
+│   ├── context/          # React Context (корзина)
+│   └── lib/              # Утилиты (Prisma client)
+├── prisma/
+│   ├── schema.prisma     # Схема базы данных
+│   ├── seed.ts           # Данные для заполнения БД
+│   └── migrations/       # Миграции
+├── public/               # Статические файлы
+├── nginx.conf            # Конфиг Nginx для VPS
+├── ecosystem.config.json # Конфиг PM2
+├── update.sh             # Скрипт обновления на VPS
+└── backup.sh             # Скрипт бэкапа БД
+```
 
-## Deploy on Vercel
+## 🔐 Админ-панель
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- URL: `/admin`
+- Логин: Введите пароль из переменной `ADMIN_PASSWORD`
+- Функции: Управление товарами, создание/редактирование/удаление
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🗃️ База данных
+
+### Локальная разработка
+
+```bash
+# Создать миграцию
+npx prisma migrate dev --name описание_изменений
+
+# Применить миграции (production)
+npx prisma migrate deploy
+
+# Открыть Prisma Studio
+npx prisma studio
+
+# Пересоздать БД и залить данные
+npx prisma migrate reset
+```
+
+### Production (VPS)
+
+```bash
+# Применить миграции
+npx prisma migrate deploy
+
+# Залить начальные данные
+npm run db:seed
+
+# Создать бэкап
+./backup.sh
+```
+
+## 🌐 Переменные окружения
+
+Создайте файл `.env.local`:
+
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/abramova"
+
+# Admin
+ADMIN_PASSWORD="your_secure_password"
+
+# Telegram
+TELEGRAM_BOT_TOKEN="your_token"
+TELEGRAM_CHAT_ID="your_chat_id"
+
+# Stripe
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_SECRET_KEY="sk_test_..."
+```
+
+## 📦 Скрипты
+
+```bash
+npm run dev          # Запуск dev сервера
+npm run build        # Сборка для production
+npm start            # Запуск production сервера
+npm run lint         # Линтинг кода
+npm run db:seed      # Заполнение БД данными
+```
+
+## 🚀 Развертывание на VPS
+
+1. Загрузите проект через WinSCP в `/var/www/abramova`
+2. Следуйте инструкциям в **[VPS_DEPLOY_GUIDE.md](VPS_DEPLOY_GUIDE.md)**
+3. Используйте **[QUICK_START.md](QUICK_START.md)** для быстрой справки
+
+### Краткая последовательность:
+
+```bash
+cd /var/www/abramova
+npm install
+# Создайте .env.local с правильными настройками
+npx prisma migrate deploy
+npm run db:seed
+npm run build
+pm2 start ecosystem.config.json
+pm2 save
+```
+
+## 🔄 Обновление сайта на VPS
+
+```bash
+./update.sh
+```
+
+Или вручную:
+
+```bash
+cd /var/www/abramova
+# Загрузите новые файлы через WinSCP
+npm install
+npm run build
+pm2 restart abramova
+```
+
+## 🔒 SEO
+
+- ✅ Meta tags настроены
+- ✅ Open Graph для соцсетей
+- ✅ Sitemap.xml (динамический)
+- ✅ Robots.txt
+- ✅ JSON-LD структурированные данные
+
+**После деплоя:** Замените домен в файлах SEO. См. [SEO_DOCUMENTATION.md](SEO_DOCUMENTATION.md)
+
+## 📊 Мониторинг
+
+```bash
+# Статус приложения
+pm2 status
+
+# Логи приложения
+pm2 logs abramova
+
+# Логи Nginx
+sudo tail -f /var/log/nginx/abramova-error.log
+
+# Мониторинг ресурсов
+pm2 monit
+```
+
+## 🆘 Поддержка
+
+Если возникли проблемы при развертывании:
+
+1. Проверьте логи: `pm2 logs abramova`
+2. Проверьте Nginx: `sudo nginx -t`
+3. Проверьте БД: `sudo systemctl status postgresql`
+4. См. раздел "Решение проблем" в [VPS_DEPLOY_GUIDE.md](VPS_DEPLOY_GUIDE.md)
+
+## 📝 Лицензия
+
+Частный проект - Natália Abramova © 2026
+
+## 🌟 Возможности
+
+- ✅ Каталог товаров с категориями
+- ✅ Корзина покупок
+- ✅ Интеграция Stripe для оплаты
+- ✅ Админ-панель для управления товарами
+- ✅ Защита админки паролем
+- ✅ Адаптивный дизайн
+- ✅ SEO оптимизация
+- ✅ Уведомления в Telegram
+- ✅ Загрузка изображений
+- ✅ Поиск товаров
+- ✅ Фильтрация по категориям
+
+---
+
+**Дата создания:** Март 2026  
+**Next.js:** 16.1.6  
+**Node.js:** 18+  
+**PostgreSQL:** 18

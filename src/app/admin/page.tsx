@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface ColorOption {
@@ -34,6 +35,7 @@ export default function AdminPage() {
 		productId: null,
 		productName: ''
 	});
+	const router = useRouter();
 
 	useEffect(() => {
 		fetchProducts();
@@ -66,6 +68,16 @@ export default function AdminPage() {
 		}
 	};
 
+	const handleLogout = async () => {
+		try {
+			await fetch('/api/auth/logout', { method: 'POST' });
+			router.push('/admin/login');
+			router.refresh();
+		} catch (error) {
+			console.error('Error logging out:', error);
+		}
+	};
+
 	const openDeleteModal = (id: string, name: string) => {
 		setDeleteModal({ isOpen: true, productId: id, productName: name });
 	};
@@ -94,6 +106,12 @@ export default function AdminPage() {
 					>
 						+ Přidat produkt
 					</Link>
+					<button
+						onClick={handleLogout}
+						className="border-2 border-red-500/50 px-6 py-2 text-center text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-300 font_nexa"
+					>
+						Odhlásit se
+					</button>
 				</div>
 			</div>
 

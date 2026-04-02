@@ -7,10 +7,55 @@ import Header from "@/components/Header";
 import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "Abramova Svičky",
-  description: "Svíčky od Abramovy, to jsou ručně vyráběné svíčky z přírodních vosků, které přinášejí teplo a atmosféru do vašeho domova. Naše svíčky jsou pečlivě vytvořeny s láskou a péčí, aby vám poskytly nejen krásný vzhled, ale i příjemnou vůni. Vyberte si z naší široké nabídky různých vůní a designů, které dokonale doplní váš interiér a vytvoří útulnou atmosféru pro každou příležitost.",
+  metadataBase: new URL('https://abramova-svicky.cz'), // Замените на ваш домен
+  title: {
+    default: "Abramova Svíčky | Ručně vyráběné sójové svíčky",
+    template: "%s | Abramova Svíčky"
+  },
+  description: "Ručně vyráběné svíčky z přírodního sójového vosku. Ekologické, veganské a šetrné k životnímu prostředí. Vonné svíčky, designové svíčky a dekorativní svíčky v květináči. Doručení po celé České republice.",
+  keywords: ["sójové svíčky", "ručně vyráběné svíčky", "vonné svíčky", "ekologické svíčky", "přírodní vosk", "designové svíčky", "dekorativní svíčky", "dárky", "svíčky online"],
+  authors: [{ name: "Natália Abramova" }],
+  creator: "Natália Abramova",
+  publisher: "Abramova Svíčky",
   icons: {
     icon: "/fav.svg",
+  },
+  openGraph: {
+    type: "website",
+    locale: "cs_CZ",
+    url: "https://abramova-svicky.cz",
+    siteName: "Abramova Svíčky",
+    title: "Abramova Svíčky | Ručně vyráběné sójové svíčky",
+    description: "Ručně vyráběné svíčky z přírodního sójového vosku. Ekologické, veganské a šetrné k životnímu prostředí.",
+    images: [
+      {
+        url: "/assets/products/glass/1.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Abramova Svíčky - Ručně vyráběné sójové svíčky"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Abramova Svíčky | Ručně vyráběné sójové svíčky",
+    description: "Ručně vyráběné svíčky z přírodního sójového vosku",
+    images: ["/assets/products/glass/1.jpg"]
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    // Добавьте после регистрации в Google Search Console
+    // google: 'ваш-код-верификации',
   }
 };
 

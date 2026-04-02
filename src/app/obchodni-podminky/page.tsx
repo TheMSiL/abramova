@@ -41,11 +41,12 @@ export default function ObchodniPodminky() {
 								2. Prodávající
 							</h3>
 							<div className="bg-white/5 rounded-lg p-4 md:p-6 space-y-2 text-white/90">
-								<p><span className="font-medium">Jméno a příjmení / Název:</span> _______________</p>
-								<p><span className="font-medium">IČO:</span> _______________</p>
-								<p><span className="font-medium">Sídlo:</span> _______________</p>
-								<p><span className="font-medium">E-mail:</span> _______________</p>
-								<p><span className="font-medium">Telefon:</span> _______________</p>
+								<p><span className="font-medium">Jméno a příjmení / Název:</span> Natalia Abramova</p>
+								<p><span className="font-medium">Název:</span> Abramova svičky a dekorace</p>
+								<p><span className="font-medium">IČO:</span> 88716058</p>
+								<p><span className="font-medium">Sídlo:</span> Premonstrátů 910,C, Praha západ Chýně</p>
+								<p><span className="font-medium">E-mail:</span> abramovanataliia8@gmail.com</p>
+								<p><span className="font-medium">Telefon:</span> +420777838820</p>
 							</div>
 						</div>
 
@@ -172,11 +173,12 @@ export default function ObchodniPodminky() {
 							</h3>
 							<p className="mb-3 text-white/90">Správcem osobních údajů je:</p>
 							<div className="bg-white/5 rounded-lg p-4 md:p-6 space-y-2 text-white/90">
-								<p><span className="font-medium">Jméno a příjmení / Název:</span> _______________</p>
-								<p><span className="font-medium">IČO:</span> _______________</p>
-								<p><span className="font-medium">Sídlo:</span> _______________</p>
-								<p><span className="font-medium">E-mail:</span> _______________</p>
-								<p><span className="font-medium">Telefon:</span> _______________</p>
+								<p><span className="font-medium">Jméno a příjmení / Název:</span> Natalia Abramova</p>
+								<p><span className="font-medium">Název:</span> Abramova svičky a dekorace</p>
+								<p><span className="font-medium">IČO:</span> 88716058</p>
+								<p><span className="font-medium">Sídlo:</span> Premonstrátů 910,C, Praha západ Chýně</p>
+								<p><span className="font-medium">E-mail:</span> abramovanataliia8@gmail.com</p>
+								<p><span className="font-medium">Telefon:</span> +420777838820</p>
 							</div>
 						</div>
 

@@ -1,3 +1,13 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "O mně",
+	description: "Příběh Natálie Abramové a jejích ručně vyráběných sójových svíček. Každá svíčka je vytvořena s láskou a péčí z přírodního ekologického vosku.",
+	openGraph: {
+		title: "O mně | Abramova Svíčky",
+		description: "Příběh Natálie Abramové a jejích ručně vyráběných sójových svíček.",
+	}
+};
 
 export default function OMne() {
 	return (

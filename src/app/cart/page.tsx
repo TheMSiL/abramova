@@ -1,21 +1,23 @@
 'use client';
 
-import CheckoutForm from '@/components/CheckoutForm';
+// Временно закомментированы импорты для Stripe
+// import CheckoutForm from '@/components/CheckoutForm';
+// import { Elements } from '@stripe/react-stripe-js';
+// import { loadStripe } from '@stripe/stripe-js';
+
 import { useCart } from '@/context/CartContext';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+// const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function CartPage() {
 	const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
-	const [paymentMethod, setPaymentMethod] = useState<'online' | 'dobírka'>('online');
+	const [paymentMethod, setPaymentMethod] = useState<'online' | 'dobírka'>('dobírka'); // Временно только dobírka
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [orderStatus, setOrderStatus] = useState<'idle' | 'success' | 'error'>('idle');
-	const [clientSecret, setClientSecret] = useState('');
+	// const [clientSecret, setClientSecret] = useState(''); // Временно не используется
 	const [isMounted, setIsMounted] = useState(false);
 	const [deliveryForm, setDeliveryForm] = useState({
 		name: '',
@@ -35,7 +37,8 @@ export default function CartPage() {
 		setIsMounted(true);
 	}, []);
 
-	// Создаем Payment Intent при выборе онлайн оплаты
+	// Создаем Payment Intent при выборе онлайн оплаты - ВРЕМЕННО ОТКЛЮЧЕНО
+	/*
 	useEffect(() => {
 		if (paymentMethod === 'online' && cart.length > 0) {
 			fetch('/api/create-payment-intent', {
@@ -51,6 +54,7 @@ export default function CartPage() {
 				.catch((error) => console.error('Chyba při vytváření platby:', error));
 		}
 	}, [paymentMethod, cart.length, totalWithShipping]);
+	*/
 
 	const handleCheckout = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -348,7 +352,8 @@ export default function CartPage() {
 								</div>
 							</div>
 
-							{/* Payment Method Selection */}
+							{/* Payment Method Selection - ВРЕМЕННО СКРЫТО */}
+							{/* 
 							<div className="mb-4 md:mb-6 pb-4 md:pb-6 border-b-2 border-gray-700">
 								<h3 className="font_nexa text-marigold mb-3 md:mb-4 text-base md:text-lg">
 									Způsob platby:
@@ -395,8 +400,24 @@ export default function CartPage() {
 									</label>
 								</div>
 							</div>
+							*/}
+
+							{/* Текущий способ оплаты */}
+							<div className="mb-4 md:mb-6 pb-4 md:pb-6 border-b-2 border-gray-700">
+								<h3 className="font_nexa text-marigold mb-3 md:mb-4 text-base md:text-lg">
+									Způsob platby:
+								</h3>
+								<div className="flex items-center gap-3 p-3 border-2 border-marigold bg-marigold/10 rounded">
+									<div className="flex-1">
+										<span className="text-sm md:text-base font_nexa">Dobírka (při doručení)</span>
+										<p className="text-xs text-gray-400 mt-1">Zaplatíte při převzetí zásilky</p>
+									</div>
+								</div>
+							</div>
 
 							{/* Stripe Payment Form or Cash on Delivery */}
+							{/* Временно скрыта онлайн оплата */}
+							{/* 
 							{paymentMethod === 'online' ? (
 								<div className="mb-4 md:mb-6">
 									{clientSecret && (
@@ -430,6 +451,8 @@ export default function CartPage() {
 									)}
 								</div>
 							) : (
+							*/}
+							<>
 								<button
 									onClick={handleCheckout}
 									disabled={isSubmitting}
@@ -438,7 +461,8 @@ export default function CartPage() {
 								>
 									{isSubmitting ? 'Odesílání...' : orderStatus === 'success' ? '✓ Objednávka odeslána!' : 'Odeslat objednávku'}
 								</button>
-							)}
+								{/* )} */}
+							</>
 
 							{orderStatus === 'success' && (
 								<div className="mb-3 p-3 bg-green-600/20 border border-green-600 text-green-400 text-center text-sm md:text-base">
@@ -452,18 +476,16 @@ export default function CartPage() {
 								</div>
 							)}
 
-							{paymentMethod === 'dobírka' && (
-								<button
-									onClick={() => {
-										if (confirm('Opravdu chcete vyprázdnit košík?')) {
-											clearCart();
-										}
-									}}
-									className="w-full px-4 py-2 border-2 border-gray-600 text-gray-400 hover:border-red-600 hover:text-red-600 transition-all text-sm md:text-base"
-								>
-									Vyprázdnit košík
-								</button>
-							)}
+							<button
+								onClick={() => {
+									if (confirm('Opravdu chcete vyprázdnit košík?')) {
+										clearCart();
+									}
+								}}
+								className="w-full px-4 py-2 border-2 border-gray-600 text-gray-400 hover:border-red-600 hover:text-red-600 transition-all text-sm md:text-base"
+							>
+								Vyprázdnit košík
+							</button>
 
 							<div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t-2 border-gray-700">
 								<h3 className="font_nexa text-marigold mb-2 md:mb-3 text-sm md:text-base">Výhody:</h3>
