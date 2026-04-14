@@ -38,9 +38,9 @@ function PaymentSuccessContent() {
 
 			const order = JSON.parse(orderData);
 
-			// Отправляем в Telegram
+			// Отправляем на email
 			try {
-				const response = await fetch('/api/send-telegram', {
+				const response = await fetch('/api/send-email', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({

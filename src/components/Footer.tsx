@@ -16,7 +16,7 @@ const items = [
 	},
 	{
 		icon: fb,
-		href: 'https://www.facebook.com/profile.php?id=61565584653170'
+		href: 'https://www.facebook.com/share/1CZn9CjE9r/'
 	}
 ]
 
