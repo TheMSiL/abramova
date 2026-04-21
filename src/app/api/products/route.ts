@@ -78,6 +78,7 @@ export async function POST(request: NextRequest) {
 				aroma: body.aroma,
 				colorOptions: body.colorOptions,
 				inStock: body.inStock ?? true,
+				stock: body.stock ?? 0,
 			},
 		});
 

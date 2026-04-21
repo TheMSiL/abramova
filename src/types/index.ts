@@ -15,6 +15,7 @@ export interface Product {
 	aroma: string | null;
 	colorOptions: ColorOption[] | null;
 	inStock: boolean;
+	stock: number;
 	createdAt: string;
 	updatedAt: string;
 }

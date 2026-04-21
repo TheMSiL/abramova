@@ -38,6 +38,33 @@ function PaymentSuccessContent() {
 
 			const order = JSON.parse(orderData);
 
+			// Резервируем товары (уменьшаем stock)
+			try {
+				const items = order.cart.map((item: { id: string; quantity: number }) => ({
+					id: item.id,
+					quantity: item.quantity,
+				}));
+
+				const reserveResponse = await fetch('/api/reserve-stock', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ items }),
+				});
+
+				if (!reserveResponse.ok) {
+					const reserveError = await reserveResponse.json();
+					console.error('Chyba při rezervaci skladu:', reserveError);
+					setError(reserveError.error || 'Chyba při rezervaci skladu');
+					setIsProcessing(false);
+					return;
+				}
+			} catch (err) {
+				console.error('Chyba při rezervaci skladu:', err);
+				setError('Nepodařilo se rezervovat zboží');
+				setIsProcessing(false);
+				return;
+			}
+
 			// Отправляем на email
 			try {
 				const response = await fetch('/api/send-email', {

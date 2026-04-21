@@ -21,21 +21,38 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 	);
 
 	const handleAddToCart = () => {
+		// Перевіряємо, чи є товар в наявності та чи достатньо на складі
+		if (quantity > product.stock) {
+			alert(`Na skladě je pouze ${product.stock} kusů`);
+			return;
+		}
+
 		addToCartWithQuantity(product, quantity);
 		setIsAdded(true);
 		setTimeout(() => setIsAdded(false), 2000);
 	};
 
 	const incrementQuantity = () => {
-		setQuantity((prev) => prev + 1);
+		setQuantity((prev) => {
+			if (prev >= product.stock) {
+				return prev;
+			}
+			return prev + 1;
+		});
 	};
 
 	const decrementQuantity = () => {
 		setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 	};
 
-	if (!product.inStock) {
-		return null;
+	if (!product.inStock || product.stock === 0) {
+		return (
+			<div className="mb-8 md:mb-12">
+				<div className="w-full bg-red-600/20 border-2 border-red-600 text-red-400 py-3 md:py-4 text-base md:text-xl font_nexa text-center">
+					NENÍ SKLADEM
+				</div>
+			</div>
+		);
 	}
 
 	if (isAdded) {
@@ -56,6 +73,13 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
 	return (
 		<div className="mb-8 md:mb-12 space-y-3 md:space-y-4">
+			{/* Відображення залишку */}
+			{product.stock <= 5 && product.stock > 0 && (
+				<div className="text-orange-400 text-sm md:text-base font_nexa">
+					⚠️ Zbývá pouze {product.stock} {product.stock === 1 ? 'kus' : product.stock < 5 ? 'kusy' : 'kusů'}
+				</div>
+			)}
+
 			<div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
 				<span className="text-gray-300 font_nexa text-base md:text-lg">Množství:</span>
 				<div className="flex items-center border-2 border-marigold/50 w-full sm:w-auto">

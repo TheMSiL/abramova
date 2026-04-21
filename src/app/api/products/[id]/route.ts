@@ -53,6 +53,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 				aroma: body.aroma,
 				colorOptions: body.colorOptions,
 				inStock: body.inStock,
+				stock: body.stock ?? 0,
 			},
 		});
 

@@ -28,6 +28,7 @@ model Product {
   aroma        String?
   colorOptions Json?
   inStock      Boolean  @default(true)
+  stock        Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

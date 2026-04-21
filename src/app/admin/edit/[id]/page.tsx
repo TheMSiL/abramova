@@ -22,6 +22,7 @@ interface Product {
 	aroma: string | null;
 	colorOptions: ColorOption[] | null;
 	inStock: boolean;
+	stock: number;
 }
 
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -41,6 +42,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 		height: undefined as number | undefined,
 		aroma: '',
 		inStock: true,
+		stock: 0,
 	});
 
 	useEffect(() => {
@@ -63,6 +65,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 					height: product.height || undefined,
 					aroma: product.aroma || '',
 					inStock: product.inStock,
+					stock: product.stock || 0,
 				});
 				setImagePreview(product.image);
 			} catch (error) {
@@ -193,6 +196,17 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 							className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
 						/>
 					</div>
+					<div>
+						<label className="block text-sm font-medium text-marigold mb-2">Počet kusů *</label>
+						<input
+							type="number"
+							required
+							min="0"
+							value={formData.stock}
+							onChange={e => setFormData({ ...formData, stock: Number(e.target.value) })}
+							className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
+						/>
+					</div>
 
 					<div>
 						<label className="block text-sm font-medium text-marigold mb-2">Kategorie *</label>
@@ -214,74 +228,64 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 								onChange={e => setFormData({ ...formData, inStock: e.target.checked })}
 								className="mr-2 w-5 h-5"
 							/>
-							<span className="font_nexa text-marigold">Skladem</span>
-						</label>
-					</div>
-				</div>
-
-				<div>
-					<label className="block text-sm font-medium text-marigold mb-2">Popis *</label>
-					<textarea
-						required
-						value={formData.description}
-						onChange={e => setFormData({ ...formData, description: e.target.value })}
-						className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
-						rows={4}
+							onChange={e => setFormData({ ...formData, description: e.target.value })}
+							className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
+							rows={4}
 					/>
-				</div>
+					</div>
 
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-					<div>
-						<label className="block text-sm font-medium text-gray-300 mb-2">Hmotnost (g)</label>
-						<input
-							type="number"
-							value={formData.weight || ''}
-							onChange={e =>
-								setFormData({
-									...formData,
-									weight: e.target.value ? Number(e.target.value) : undefined,
-								})
-							}
-							className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
-						/>
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+						<div>
+							<label className="block text-sm font-medium text-gray-300 mb-2">Hmotnost (g)</label>
+							<input
+								type="number"
+								value={formData.weight || ''}
+								onChange={e =>
+									setFormData({
+										...formData,
+										weight: e.target.value ? Number(e.target.value) : undefined,
+									})
+								}
+								className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
+							/>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-300 mb-2">Výška (cm)</label>
+							<input
+								type="number"
+								value={formData.height || ''}
+								onChange={e =>
+									setFormData({
+										...formData,
+										height: e.target.value ? Number(e.target.value) : undefined,
+									})
+								}
+								className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
+							/>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-300 mb-2">Vůně</label>
+							<input
+								type="text"
+								value={formData.aroma}
+								onChange={e => setFormData({ ...formData, aroma: e.target.value })}
+								className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
+							/>
+						</div>
 					</div>
-					<div>
-						<label className="block text-sm font-medium text-gray-300 mb-2">Výška (cm)</label>
-						<input
-							type="number"
-							value={formData.height || ''}
-							onChange={e =>
-								setFormData({
-									...formData,
-									height: e.target.value ? Number(e.target.value) : undefined,
-								})
-							}
-							className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
-						/>
-					</div>
-					<div>
-						<label className="block text-sm font-medium text-gray-300 mb-2">Vůně</label>
-						<input
-							type="text"
-							value={formData.aroma}
-							onChange={e => setFormData({ ...formData, aroma: e.target.value })}
-							className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
-						/>
-					</div>
-				</div>
 
-				{/* Actions */}
-				<div className="flex flex-col sm:flex-row gap-4 pt-6">
-					<button type="submit" className="border-2 border-marigold px-8 py-2 text-center text-black bg-gradient-to-br from-[#b57e10] to-[#f9df7b] hover:from-[#f9df7b] hover:to-[#b57e10] transition-all duration-300 font_nexa text-lg">
-						Uložit změny
-					</button>
-					<Link
-						href="/admin"
-						className="border-2 border-gray-600 px-8 py-2 text-center text-gray-300 hover:border-gray-400 hover:text-white transition-all duration-300 font_nexa"
-					>
-						Zrušit
-					</Link>
-				</div>
+					{/* Actions */}
+					<div className="flex flex-col sm:flex-row gap-4 pt-6">
+						<button type="submit" className="border-2 border-marigold px-8 py-2 text-center text-black bg-gradient-to-br from-[#b57e10] to-[#f9df7b] hover:from-[#f9df7b] hover:to-[#b57e10] transition-all duration-300 font_nexa text-lg">
+							Uložit změny
+						</button>
+						<Link
+							href="/admin"
+							className="border-2 border-gray-600 px-8 py-2 text-center text-gray-300 hover:border-gray-400 hover:text-white transition-all duration-300 font_nexa"
+						>
+							Zrušit
+						</Link>
+					</div>
 			</form>
 		</div>
 	);

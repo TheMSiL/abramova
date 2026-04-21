@@ -140,9 +140,15 @@ export default function AdminPage() {
 							<p className="text-xl sm:text-2xl font_nexa text-marigold">
 								{product.price} Kč
 							</p>
+							{/* Количество на складе */}
+							<p className="text-sm text-gray-400">
+								Skladem: <span className={`font_nexa ${product.stock === 0 ? 'text-red-400' : product.stock <= 5 ? 'text-orange-400' : 'text-green-400'}`}>
+									{product.stock} ks
+								</span>
+							</p>
 							{/* Наличие */}
 							<div className="inline-block">
-								{product.inStock ? (
+								{product.inStock && product.stock > 0 ? (
 									<span className="px-3 py-1 text-sm border border-green-500/50 text-green-400 font_nexa">
 										SKLADEM
 									</span>

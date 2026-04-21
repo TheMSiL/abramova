@@ -69,6 +69,12 @@ export default function CategoriesPage() {
 	};
 
 	const handleAddToCart = (product: any) => {
+		// Перевіряємо наявність на складі
+		if (!product.inStock || product.stock === 0) {
+			alert('Tento produkt není skladem');
+			return;
+		}
+
 		if (product.colorOptions && product.colorOptions.length > 0) {
 			// Открываем модалку для выбора цвета
 			setSelectedProduct(product);
@@ -145,9 +151,13 @@ export default function CategoriesPage() {
 								{/* Product Image */}
 								<div className="relative h-[250px] md:h-[300px] overflow-hidden">
 									<Image src={product.image} alt={product.name} width='300' height='300' className="mx-auto object-contain aspect-square" />
-									{!product.inStock && (
+									{!product.inStock || product.stock === 0 ? (
 										<div className="absolute top-4 right-4 z-20 bg-red-600 text-white px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font_nexa">
 											VYPRODÁNO
+										</div>
+									) : product.stock <= 5 && (
+										<div className="absolute top-4 right-4 z-20 bg-orange-600 text-white px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font_nexa">
+											Jen {product.stock}x skladem
 										</div>
 									)}
 								</div>
@@ -178,13 +188,13 @@ export default function CategoriesPage() {
 										<span className="text-xl md:text-2xl font_nexa text-marigold">
 											{product.price} Kč
 										</span>
-										{product.inStock ? (
+										{product.inStock && product.stock > 0 ? (
 											<button
 												onClick={() => handleAddToCart(product)}
 												disabled={!product.colorOptions && isInCart(product.id)}
 												className={`px-3 py-2 md:px-4 md:py-2 border-2 transition-all duration-300 font_nexa text-sm md:text-base ${!product.colorOptions && isInCart(product.id)
-														? 'border-marigold bg-marigold text-black cursor-not-allowed'
-														: 'border-marigold text-marigold hover:bg-marigold hover:text-black'
+													? 'border-marigold bg-marigold text-black cursor-not-allowed'
+													: 'border-marigold text-marigold hover:bg-marigold hover:text-black'
 													}`}
 											>
 												{!product.colorOptions && isInCart(product.id) ? 'V KOŠÍKU' : 'DO KOŠÍKU'}
