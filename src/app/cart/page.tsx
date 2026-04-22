@@ -228,8 +228,16 @@ export default function CartPage() {
 									<div className="flex-1">
 										<h3 className="text-lg md:text-xl font_nexa text-marigold mb-2">
 											{item.name}
-										</h3>
-										{colorName && (
+										</h3>											{item.stock !== undefined && (
+											<p className="text-sm text-gray-400 mb-1">
+												<span className={`font_nexa ${item.stock <= 3 ? 'text-orange-400' :
+														item.stock <= 10 ? 'text-yellow-400' :
+															'text-green-400'
+													}`}>
+													Skladem: {item.stock} ks
+												</span>
+											</p>
+										)}										{colorName && (
 											<p className="text-sm md:text-base text-gray-400 mb-2">
 												Barva: <span className="text-marigold">{colorName}</span>
 											</p>

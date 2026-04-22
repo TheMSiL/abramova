@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import sharp from 'sharp';
 
 export async function POST(request: NextRequest) {
 	try {
@@ -17,20 +18,23 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Проверка размера файла (макс 2MB)
-		if (file.size > 2 * 1024 * 1024) {
-			return NextResponse.json(
-				{ error: 'File size must be less than 2MB' },
-				{ status: 400 },
-			);
-		}
-
 		const bytes = await file.arrayBuffer();
 		const buffer = Buffer.from(bytes);
 
+		// Оптимизируем изображение с помощью sharp
+		// Конвертируем в WebP для лучшего сжатия и качества
+		const optimizedBuffer = await sharp(buffer)
+			.resize(800, 800, {
+				// Максимальный размер 800x800
+				fit: 'inside',
+				withoutEnlargement: true,
+			})
+			.webp({ quality: 85 }) // WebP с качеством 85%
+			.toBuffer();
+
 		// Конвертируем в base64 и создаем data URL
-		const base64 = buffer.toString('base64');
-		const url = `data:${file.type};base64,${base64}`;
+		const base64 = optimizedBuffer.toString('base64');
+		const url = `data:image/webp;base64,${base64}`;
 
 		return NextResponse.json({ url }, { status: 200 });
 	} catch (error) {

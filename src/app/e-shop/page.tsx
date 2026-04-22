@@ -187,7 +187,17 @@ export default function CategoriesPage() {
 									<h3 className="text-lg md:text-xl font_nexa my-2 md:my-3 group-hover:text-marigold transition-colors duration-300">
 										{product.name}
 									</h3>
-
+									{/* Stock Info */}
+									{product.inStock && product.stock > 0 && (
+										<div className="text-sm text-gray-400 mb-2">
+											<span className={`font_nexa ${product.stock <= 3 ? 'text-orange-400' :
+													product.stock <= 10 ? 'text-yellow-400' :
+														'text-green-400'
+												}`}>
+												Skladem: {product.stock} ks
+											</span>
+										</div>
+									)}
 									{/* Price and Button */}
 									<div className="flex justify-between items-center mt-6 md:mt-10">
 										<span className="text-xl md:text-2xl font_nexa text-marigold">
