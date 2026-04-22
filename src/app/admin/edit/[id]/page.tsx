@@ -228,13 +228,23 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 								onChange={e => setFormData({ ...formData, inStock: e.target.checked })}
 								className="mr-2 w-5 h-5"
 							/>
-							onChange={e => setFormData({ ...formData, description: e.target.value })}
-							className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
-							rows={4}
-					/>
-					</div>
+						<span className="font_nexa text-marigold">Skladem</span>
+					</label>
+				</div>
+			</div>
 
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+			<div>
+				<label className="block text-sm font-medium text-marigold mb-2">Popis *</label>
+				<textarea
+					required
+					value={formData.description}
+					onChange={e => setFormData({ ...formData, description: e.target.value })}
+					className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
+					rows={4}
+				/>
+			</div>
+
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 						<div>
 							<label className="block text-sm font-medium text-gray-300 mb-2">Hmotnost (g)</label>
 							<input
