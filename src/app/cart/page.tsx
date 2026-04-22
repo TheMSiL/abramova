@@ -523,6 +523,9 @@ export default function CartPage() {
 								className="w-full px-4 py-2 border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all text-sm md:text-base font_nexa"
 							>
 								Vyprázdnit košík
+							</button>
+
+							<div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t-2 border-gray-700">
 								<h3 className="font_nexa text-marigold mb-2 md:mb-3 text-sm md:text-base">Výhody:</h3>
 								<ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm text-gray-300">
 									<li>🚚 Doprava zdarma nad 1500 Kč</li>
@@ -530,6 +533,7 @@ export default function CartPage() {
 									<li>🌱 Přírodní vosk</li>
 									<li>🇨🇿 Ručně vyrobeno v ČR</li>
 								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
