@@ -1,3 +1,4 @@
+import { Prisma } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
@@ -5,7 +6,22 @@ import { NextRequest, NextResponse } from 'next/server';
 interface RouteParams {
 	params: Promise<{ id: string }>;
 }
-
+interface ProductWithStock {
+	id: string;
+	name: string;
+	price: number;
+	category: string;
+	image: string;
+	description: string;
+	weight: number | null;
+	height: number | null;
+	aroma: string | null;
+	colorOptions: Prisma.JsonValue;
+	inStock: boolean;
+	stock: number;
+	createdAt: Date;
+	updatedAt: Date;
+}
 // POST /api/products/[id]/change-id - изменение ID товара
 export async function POST(request: NextRequest, { params }: RouteParams) {
 	try {
@@ -33,9 +49,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 		}
 
 		// Получаем текущий товар
-		const currentProduct = await prisma.product.findUnique({
+		const currentProduct = (await prisma.product.findUnique({
 			where: { id },
-		});
+		})) as ProductWithStock | null;
 
 		if (!currentProduct) {
 			return NextResponse.json({ error: 'Product not found' }, { status: 404 });
@@ -53,7 +69,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 				weight: currentProduct.weight,
 				height: currentProduct.height,
 				aroma: currentProduct.aroma,
-				colorOptions: currentProduct.colorOptions,
+				colorOptions:
+					currentProduct.colorOptions === null
+						? Prisma.JsonNull
+						: currentProduct.colorOptions || undefined,
 				inStock: currentProduct.inStock,
 				stock: currentProduct.stock,
 				createdAt: currentProduct.createdAt,
