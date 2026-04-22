@@ -254,7 +254,7 @@ export default function CartPage() {
 												<button
 													onClick={() => {
 														if (item.quantity >= item.stock) {
-															setToast({ message: `Na skladě je pouze ${item.stock} kusů`, type: 'warning' });
+															setToast({ message: 'Na skladě není dostatečné množství', type: 'warning' });
 															return;
 														}
 														updateQuantity(item.id, item.quantity + 1, item.selectedColor);
@@ -537,40 +537,35 @@ export default function CartPage() {
 						</div>
 					</div>
 				</div>
+
+				{/* Continue Shopping */}
+				<div className="mt-8 md:mt-12 text-center">
+					<Link href="/e-shop" className="inline-block hero_btn font_nexa text-base md:text-lg lg:text-xl">
+						← Pokračovat v nákupu
+					</Link>
+				</div>
 			</div>
 
-			{/* Continue Shopping */}
-			<div className="mt-8 md:mt-12 text-center">
-				<Link href="/e-shop" className="inline-block hero_btn font_nexa text-base md:text-lg lg:text-xl">
-					← Pokračovat v nákupu
-				</Link>
-			</div>
-		</div>
+			{/* Toast Notification */}
+			{toast && (
+				<Toast
+					message={toast.message}
+					type={toast.type}
+					onClose={() => setToast(null)}
+				/>
+			)}
 
-			{/* Toast Notification */ }
-	{
-		toast && (
-			<Toast
-				message={toast.message}
-				type={toast.type}
-				onClose={() => setToast(null)}
-			/>
-		)
-	}
-
-	{/* Confirm Modal */ }
-	{
-		showConfirmModal && (
-			<ConfirmModal
-				message="Opravdu chcete vyprázdnit košík?"
-				onConfirm={() => {
-					clearCart();
-					setShowConfirmModal(false);
-				}}
-				onCancel={() => setShowConfirmModal(false)}
-			/>
-		)
-	}
-		</main >
+			{/* Confirm Modal */}
+			{showConfirmModal && (
+				<ConfirmModal
+					message="Opravdu chcete vyprázdnit košík?"
+					onConfirm={() => {
+						clearCart();
+						setShowConfirmModal(false);
+					}}
+					onCancel={() => setShowConfirmModal(false)}
+				/>
+			)}
+		</main>
 	);
 }
