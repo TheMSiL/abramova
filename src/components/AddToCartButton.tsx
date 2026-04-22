@@ -1,5 +1,6 @@
 'use client';
 
+import Toast from '@/components/Toast';
 import { useCart } from '@/context/CartContext';
 import { Product } from '@/types';
 import Link from 'next/link';
@@ -13,6 +14,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 	const { addToCartWithQuantity, isInCart } = useCart();
 	const [quantity, setQuantity] = useState(1);
 	const [isAdded, setIsAdded] = useState(false);
+	const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'warning' } | null>(null);
 
 	const productInCart = useSyncExternalStore(
 		() => () => { },
@@ -23,7 +25,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 	const handleAddToCart = () => {
 		// Перевіряємо, чи є товар в наявності та чи достатньо на складі
 		if (quantity > product.stock) {
-			alert(`Na skladě je pouze ${product.stock} kusů`);
+			setToast({ message: `Na skladě je pouze ${product.stock} kusů`, type: 'warning' });
 			return;
 		}
 
@@ -107,6 +109,15 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 			>
 				{productInCart && !isAdded ? 'UŽ V KOŠÍKU' : 'PŘIDAT DO KOŠÍKU'}
 			</button>
+
+			{/* Toast Notification */}
+			{toast && (
+				<Toast
+					message={toast.message}
+					type={toast.type}
+					onClose={() => setToast(null)}
+				/>
+			)}
 		</div>
 	);
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import ColorSelectionModal from '@/components/ColorSelectionModal';
+import Toast from '@/components/Toast';
 import { useCart } from '@/context/CartContext';
 import { Category, Product } from '@/types';
 import Image from 'next/image';
@@ -19,6 +20,7 @@ export default function CategoriesPage() {
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [products, setProducts] = useState<Product[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'warning' } | null>(null);
 
 	// Определяем активную категорию (по умолчанию первая)
 	const activeCategory = tabParam || 'sklo';
@@ -71,7 +73,7 @@ export default function CategoriesPage() {
 	const handleAddToCart = (product: any) => {
 		// Перевіряємо наявність на складі
 		if (!product.inStock || product.stock === 0) {
-			alert('Tento produkt není skladem');
+			setToast({ message: 'Tento produkt není skladem', type: 'error' });
 			return;
 		}
 
@@ -151,13 +153,9 @@ export default function CategoriesPage() {
 								{/* Product Image */}
 								<div className="relative h-[250px] md:h-[300px] overflow-hidden">
 									<Image src={product.image} alt={product.name} width='300' height='300' className="mx-auto object-contain aspect-square" />
-									{!product.inStock || product.stock === 0 ? (
+									{(!product.inStock || product.stock === 0) && (
 										<div className="absolute top-4 right-4 z-20 bg-red-600 text-white px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font_nexa">
 											VYPRODÁNO
-										</div>
-									) : (
-										<div className="absolute top-4 right-4 z-20 bg-green-600 text-white px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font_nexa">
-											SKLADEM
 										</div>
 									)}
 								</div>
@@ -242,6 +240,15 @@ export default function CategoriesPage() {
 					colors={selectedProduct.colorOptions}
 					onAddToCart={handleAddToCartWithColor}
 					colorsInCart={getProductColorsInCart(selectedProduct.id)}
+				/>
+			)}
+
+			{/* Toast Notification */}
+			{toast && (
+				<Toast
+					message={toast.message}
+					type={toast.type}
+					onClose={() => setToast(null)}
 				/>
 			)}
 		</main>

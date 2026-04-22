@@ -1,5 +1,6 @@
 'use client';
 
+import Toast from '@/components/Toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,6 +15,7 @@ export default function CreateProductPage() {
 	const router = useRouter();
 	const [uploading, setUploading] = useState(false);
 	const [imagePreview, setImagePreview] = useState<string>('');
+	const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'warning' } | null>(null);
 
 	const [formData, setFormData] = useState({
 		name: '',
@@ -50,7 +52,7 @@ export default function CreateProductPage() {
 			setImagePreview(url);
 		} catch (error) {
 			console.error('Error uploading image:', error);
-			alert('Chyba při nahrávání obrázku');
+			setToast({ message: 'Chyba při nahrávání obrázku', type: 'error' });
 		} finally {
 			setUploading(false);
 		}
@@ -73,7 +75,7 @@ export default function CreateProductPage() {
 			router.push('/admin');
 		} catch (error) {
 			console.error('Error creating product:', error);
-			alert('Chyba při vytváření produktu');
+			setToast({ message: 'Chyba při vytváření produktu', type: 'error' });
 		}
 	};
 
@@ -238,6 +240,15 @@ export default function CreateProductPage() {
 					</Link>
 				</div>
 			</form>
+
+			{/* Toast Notification */}
+			{toast && (
+				<Toast
+					message={toast.message}
+					type={toast.type}
+					onClose={() => setToast(null)}
+				/>
+			)}
 		</div>
 	);
 }

@@ -192,7 +192,6 @@ export default function AdminPage() {
 				</div>
 			)}
 
-			{/* Delete Confirmation Modal */}
 			{deleteModal.isOpen && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
 					<div className="bg-black border-2 border-red-500/50 max-w-md w-full p-8">

@@ -80,4 +80,47 @@ body {
 		color: black;
 		@apply text-2xl px-3 py-1 rounded-2xl overflow-hidden duration-300 hover:opacity-80;
 	}
+
+	.animate-slide-down {
+		animation: slideDown 0.3s ease-out;
+	}
+
+	.animate-fade-in {
+		animation: fadeIn 0.2s ease-out;
+	}
+
+	.animate-scale-in {
+		animation: scaleIn 0.3s ease-out;
+	}
+}
+
+@keyframes slideDown {
+	from {
+		transform: translateX(-50%) translateY(-100%);
+		opacity: 0;
+	}
+	to {
+		transform: translateX(-50%) translateY(0);
+		opacity: 1;
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes scaleIn {
+	from {
+		transform: scale(0.9);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
 }

@@ -5,6 +5,8 @@
 // import { Elements } from '@stripe/react-stripe-js';
 // import { loadStripe } from '@stripe/stripe-js';
 
+import ConfirmModal from '@/components/ConfirmModal';
+import Toast from '@/components/Toast';
 import { useCart } from '@/context/CartContext';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -19,6 +21,8 @@ export default function CartPage() {
 	const [orderStatus, setOrderStatus] = useState<'idle' | 'success' | 'error'>('idle');
 	// const [clientSecret, setClientSecret] = useState(''); // Временно не используется
 	const [isMounted, setIsMounted] = useState(false);
+	const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'warning' } | null>(null);
+	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [deliveryForm, setDeliveryForm] = useState({
 		name: '',
 		surname: '',
@@ -62,7 +66,7 @@ export default function CartPage() {
 		// Простая валидация
 		if (!deliveryForm.name || !deliveryForm.surname || !deliveryForm.email ||
 			!deliveryForm.phone || !deliveryForm.street || !deliveryForm.city || !deliveryForm.zip) {
-			alert('Vyplňte prosím všechna povinná pole');
+			setToast({ message: 'Vyplňte prosím všechna povinná pole', type: 'warning' });
 			return;
 		}
 
@@ -89,9 +93,12 @@ export default function CartPage() {
 			if (!reserveResponse.ok) {
 				// Якщо недостатньо товару на складі
 				if (reserveData.productName) {
-					alert(`Omlouváme se, ale ${reserveData.productName} již není na skladě v požadovaném množství. Dostupné: ${reserveData.available} ks, požadováno: ${reserveData.requested} ks.`);
+					setToast({ 
+						message: `${reserveData.productName} - skladem pouze ${reserveData.available} ks`, 
+						type: 'error' 
+					});
 				} else {
-					alert(reserveData.error || 'Některé produkty již nejsou skladem');
+					setToast({ message: reserveData.error || 'Některé produkty již nejsou skladem', type: 'error' });
 				}
 				setOrderStatus('error');
 				setIsSubmitting(false);
@@ -132,12 +139,12 @@ export default function CartPage() {
 				}, 2000);
 			} else {
 				setOrderStatus('error');
-				alert(data.error || 'Něco se pokazilo. Zkuste to prosím znovu.');
+				setToast({ message: data.error || 'Něco se pokazilo. Zkuste to prosím znovu.', type: 'error' });
 			}
 		} catch (error) {
 			console.error('Chyba při odesílání objednávky:', error);
 			setOrderStatus('error');
-			alert('Nepodařilo se odeslat objednávku. Zkontrolujte připojení k internetu.');
+			setToast({ message: 'Nepodařilo se odeslat objednávku. Zkontrolujte připojení k internetu.', type: 'error' });
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -247,7 +254,7 @@ export default function CartPage() {
 												<button
 													onClick={() => {
 														if (item.quantity >= item.stock) {
-															alert(`Na skladě je pouze ${item.stock} kusů`);
+														setToast({ message: `Na skladě je pouze ${item.stock} kusů`, type: 'warning' });
 															return;
 														}
 														updateQuantity(item.id, item.quantity + 1, item.selectedColor);
@@ -512,12 +519,7 @@ export default function CartPage() {
 							)}
 
 							<button
-								onClick={() => {
-									if (confirm('Opravdu chcete vyprázdnit košík?')) {
-										clearCart();
-									}
-								}}
-								className="w-full px-4 py-2 border-2 border-gray-600 text-gray-400 hover:border-red-600 hover:text-red-600 transition-all text-sm md:text-base"
+						onClick={() => setShowConfirmModal(true)}
 							>
 								Vyprázdnit košík
 							</button>
@@ -542,6 +544,27 @@ export default function CartPage() {
 					</Link>
 				</div>
 			</div>
+
+			{/* Toast Notification */}
+			{toast && (
+				<Toast
+					message={toast.message}
+					type={toast.type}
+					onClose={() => setToast(null)}
+				/>
+			)}
+
+			{/* Confirm Modal */}
+			{showConfirmModal && (
+				<ConfirmModal
+					message="Opravdu chcete vyprázdnit košík?"
+					onConfirm={() => {
+						clearCart();
+						setShowConfirmModal(false);
+					}}
+					onCancel={() => setShowConfirmModal(false)}
+				/>
+			)}
 		</main>
 	);
 }

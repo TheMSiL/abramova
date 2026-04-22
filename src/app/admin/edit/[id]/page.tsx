@@ -1,5 +1,6 @@
 'use client';
 
+import Toast from '@/components/Toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -31,6 +32,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 	const [uploading, setUploading] = useState(false);
 	const [imagePreview, setImagePreview] = useState<string>('');
 	const [productId, setProductId] = useState<string>('');
+	const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'warning' } | null>(null);
 
 	const [formData, setFormData] = useState({
 		name: '',
@@ -70,8 +72,8 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 				setImagePreview(product.image);
 			} catch (error) {
 				console.error('Error loading product:', error);
-				alert('Chyba při načítání produktu');
-				router.push('/admin');
+				setToast({ message: 'Chyba při načítání produktu', type: 'error' });
+				setTimeout(() => router.push('/admin'), 2000);
 			} finally {
 				setLoading(false);
 			}
@@ -101,7 +103,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 			setImagePreview(url);
 		} catch (error) {
 			console.error('Error uploading image:', error);
-			alert('Chyba při nahrávání obrázku');
+			setToast({ message: 'Chyba při nahrávání obrázku', type: 'error' });
 		} finally {
 			setUploading(false);
 		}
@@ -124,7 +126,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 			router.push('/admin');
 		} catch (error) {
 			console.error('Error updating product:', error);
-			alert('Chyba při aktualizaci produktu');
+			setToast({ message: 'Chyba při aktualizaci produktu', type: 'error' });
 		}
 	};
 
@@ -297,6 +299,15 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 					</Link>
 				</div>
 			</form>
+
+			{/* Toast Notification */}
+			{toast && (
+				<Toast
+					message={toast.message}
+					type={toast.type}
+					onClose={() => setToast(null)}
+				/>
+			)}
 		</div>
 	);
 }
