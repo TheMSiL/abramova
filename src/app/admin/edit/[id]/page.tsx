@@ -38,7 +38,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 	const [formData, setFormData] = useState({
 		name: '',
 		price: 0,
-		category: 'glass',
+		category: 'sklo',
 		image: '',
 		description: '',
 		weight: undefined as number | undefined,
@@ -268,9 +268,9 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 							onChange={e => setFormData({ ...formData, category: e.target.value })}
 							className="w-full bg-transparent border border-marigold/30 text-white p-3 focus:border-marigold focus:outline-none"
 						>
-							<option value="glass" className="bg-black">Svíčka ve skle</option>
-							<option value="decorate" className="bg-black">Dekorativní svíčky</option>
-							<option value="design" className="bg-black">Designové svíčky</option>
+							<option value="sklo" className="bg-black">Svíčka ve skle</option>
+							<option value="dekorativni" className="bg-black">Dekorativní svíčky</option>
+							<option value="designove" className="bg-black">Designové svíčky</option>
 						</select>
 					</div>
 					<div>
