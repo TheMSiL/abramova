@@ -3,9 +3,13 @@
 # Скрипт автоматического резервного копирования базы данных
 # Добавьте в crontab: 0 2 * * * /var/www/abramova/backup.sh
 
+# Загрузить переменные окружения
+source .env 2>/dev/null || export DATABASE_URL="postgresql://abramova_user:ch113430@localhost:5432/abramova"
+
 # Настройки
 DB_NAME="abramova"
-DB_USER="postgres"
+DB_USER="abramova_user"
+PGPASSWORD="ch113430"
 BACKUP_DIR="/var/backups/abramova"
 DATE=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="${BACKUP_DIR}/abramova-${DATE}.sql"
@@ -15,7 +19,8 @@ mkdir -p "$BACKUP_DIR"
 
 # Создать резервную копию
 echo "Создание резервной копии базы данных..."
-pg_dump -U "$DB_USER" "$DB_NAME" > "$BACKUP_FILE"
+export PGPASSWORD
+pg_dump -U "$DB_USER" -h localhost "$DB_NAME" > "$BACKUP_FILE"
 
 # Сжать резервную копию
 gzip "$BACKUP_FILE"

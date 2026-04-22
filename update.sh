@@ -14,7 +14,8 @@ cd /var/www/abramova || exit
 # Создание резервной копии базы данных
 echo "📦 Создание резервной копии БД..."
 BACKUP_DATE=$(date +%Y%m%d_%H%M%S)
-pg_dump -U postgres abramova > "/var/backups/abramova-${BACKUP_DATE}.sql"
+export PGPASSWORD="ch113430"
+pg_dump -U abramova_user -h localhost abramova > "/var/backups/abramova-${BACKUP_DATE}.sql"
 
 # Обновление кода (если используется git)
 # echo "📥 Получение обновлений..."
@@ -34,7 +35,7 @@ npx prisma generate
 
 # Оновлення stock для існуючих товарів
 echo "📊 Оновлення stock для існуючих товарів..."
-psql "$DATABASE_URL" -c "UPDATE \"Product\" SET stock = 10 WHERE stock = 0;" || echo "⚠️ Не вдалося оновити stock (можливо вже оновлено)"
+PGPASSWORD="ch113430" psql -U abramova_user -h localhost -d abramova -c "UPDATE \"Product\" SET stock = 10 WHERE stock = 0;" || echo "⚠️ Не вдалося оновити stock (можливо вже оновлено)"
 
 # Сборка проекта
 echo "🔨 Сборка проекта..."
