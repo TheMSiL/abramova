@@ -3,6 +3,9 @@
 # Скрипт для быстрого обновления сайта на VPS
 # Использование: ./update.sh
 
+# Загрузить переменные окружения
+source .env 2>/dev/null || export DATABASE_URL="postgresql://abramova_user:ch113430@localhost:5432/abramova"
+
 echo "🚀 Начинаем обновление Abramova Svíčky..."
 
 # Переход в директорию проекта
@@ -28,6 +31,10 @@ npx prisma migrate deploy
 # Генерация Prisma Client
 echo "⚙️ Генерация Prisma Client..."
 npx prisma generate
+
+# Оновлення stock для існуючих товарів
+echo "📊 Оновлення stock для існуючих товарів..."
+psql "$DATABASE_URL" -c "UPDATE \"Product\" SET stock = 10 WHERE stock = 0;" || echo "⚠️ Не вдалося оновити stock (можливо вже оновлено)"
 
 # Сборка проекта
 echo "🔨 Сборка проекта..."
