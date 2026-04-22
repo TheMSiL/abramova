@@ -22,6 +22,7 @@ interface Product {
 	aroma?: string;
 	colorOptions?: ColorOption[];
 	inStock: boolean;
+	stock: number;
 	createdAt: string;
 	updatedAt: string;
 }
