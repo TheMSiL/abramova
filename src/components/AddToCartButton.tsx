@@ -73,13 +73,6 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
 	return (
 		<div className="mb-8 md:mb-12 space-y-3 md:space-y-4">
-			{/* Відображення залишку */}
-			{product.stock <= 5 && product.stock > 0 && (
-				<div className="text-orange-400 text-sm md:text-base font_nexa">
-					⚠️ Zbývá pouze {product.stock} {product.stock === 1 ? 'kus' : product.stock < 5 ? 'kusy' : 'kusů'}
-				</div>
-			)}
-
 			<div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
 				<span className="text-gray-300 font_nexa text-base md:text-lg">Množství:</span>
 				<div className="flex items-center border-2 border-marigold/50 w-full sm:w-auto">

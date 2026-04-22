@@ -155,9 +155,9 @@ export default function CategoriesPage() {
 										<div className="absolute top-4 right-4 z-20 bg-red-600 text-white px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font_nexa">
 											VYPRODÁNO
 										</div>
-									) : product.stock <= 5 && (
-										<div className="absolute top-4 right-4 z-20 bg-orange-600 text-white px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font_nexa">
-											Jen {product.stock}x skladem
+								) : (
+									<div className="absolute top-4 right-4 z-20 bg-green-600 text-white px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font_nexa">
+										SKLADEM
 										</div>
 									)}
 								</div>

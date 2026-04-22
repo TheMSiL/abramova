@@ -70,6 +70,35 @@ export default function CartPage() {
 		setOrderStatus('idle');
 
 		try {
+			// 1. Спочатку перевіряємо та резервуємо stock
+			const reserveResponse = await fetch('/api/reserve-stock', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					items: cart.map(item => ({
+						id: item.id,
+						quantity: item.quantity,
+					})),
+				}),
+			});
+
+			const reserveData = await reserveResponse.json();
+
+			if (!reserveResponse.ok) {
+				// Якщо недостатньо товару на складі
+				if (reserveData.productName) {
+					alert(`Omlouváme se, ale ${reserveData.productName} již není na skladě v požadovaném množství. Dostupné: ${reserveData.available} ks, požadováno: ${reserveData.requested} ks.`);
+				} else {
+					alert(reserveData.error || 'Některé produkty již nejsou skladem');
+				}
+				setOrderStatus('error');
+				setIsSubmitting(false);
+				return;
+			}
+
+			// 2. Якщо stock зарезервовано успішно, відправляємо email
 			const response = await fetch('/api/send-email', {
 				method: 'POST',
 				headers: {
@@ -216,7 +245,13 @@ export default function CartPage() {
 													{item.quantity}
 												</span>
 												<button
-													onClick={() => updateQuantity(item.id, item.quantity + 1, item.selectedColor)}
+													onClick={() => {
+														if (item.quantity >= item.stock) {
+															alert(`Na skladě je pouze ${item.stock} kusů`);
+															return;
+														}
+														updateQuantity(item.id, item.quantity + 1, item.selectedColor);
+													}}
 													className="px-3 md:px-4 py-2 text-marigold hover:bg-marigold hover:text-black transition-all font_nexa text-lg md:text-xl flex-1 sm:flex-none"
 												>
 													+
