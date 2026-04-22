@@ -72,7 +72,16 @@ export default function CreateProductPage() {
 
 			if (!response.ok) throw new Error('Failed to create product');
 
-			router.push('/admin');
+			const product = await response.json();
+
+			// Показываем успешное сообщение
+			setToast({ message: 'Produkt byl úspěšně vytvořen!', type: 'success' });
+
+			// Ждем немного и переходим на админку с обновлением
+			setTimeout(() => {
+				router.push('/admin');
+				router.refresh();
+			}, 1000);
 		} catch (error) {
 			console.error('Error creating product:', error);
 			setToast({ message: 'Chyba při vytváření produktu', type: 'error' });

@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET /api/products - получение всех товаров с фильтрацией
@@ -88,6 +89,10 @@ export async function POST(request: NextRequest) {
 			createdAt: product.createdAt.toISOString(),
 			updatedAt: product.updatedAt.toISOString(),
 		};
+
+		// Инвалидируем кэш страниц
+		revalidatePath('/admin');
+		revalidatePath('/e-shop');
 
 		return NextResponse.json(productData, { status: 201 });
 	} catch (error) {

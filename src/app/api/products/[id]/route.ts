@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 interface RouteParams {
@@ -64,6 +65,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 			updatedAt: product.updatedAt.toISOString(),
 		};
 
+		// Инвалидируем кэш страниц
+		revalidatePath('/admin');
+		revalidatePath('/e-shop');
+
 		return NextResponse.json(productData);
 	} catch (error) {
 		console.error('Error updating product:', error);
@@ -78,6 +83,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
 	try {
 		const { id } = await params;
+
+		// Инвалидируем кэш страниц
+		revalidatePath('/admin');
+		revalidatePath('/e-shop');
 
 		await prisma.product.delete({
 			where: { id },

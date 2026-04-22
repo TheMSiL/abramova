@@ -32,6 +32,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 	const [uploading, setUploading] = useState(false);
 	const [imagePreview, setImagePreview] = useState<string>('');
 	const [productId, setProductId] = useState<string>('');
+	const [newProductId, setNewProductId] = useState<string>('');
 	const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'warning' } | null>(null);
 
 	const [formData, setFormData] = useState({
@@ -51,6 +52,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 		const loadProduct = async () => {
 			const { id } = await params;
 			setProductId(id);
+			setNewProductId(id); // Устанавливаем начальный ID
 
 			try {
 				const response = await fetch(`/api/products/${id}`);
@@ -113,7 +115,24 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 		e.preventDefault();
 
 		try {
-			const response = await fetch(`/api/products/${productId}`, {
+			// Если ID изменился, сначала меняем ID
+			if (newProductId !== productId) {
+				const changeIdResponse = await fetch(`/api/products/${productId}/change-id`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ newId: newProductId }),
+				});
+
+				if (!changeIdResponse.ok) {
+					const error = await changeIdResponse.json();
+					throw new Error(error.error || 'Failed to change product ID');
+				}
+			}
+
+			// Обновляем данные товара (используем новый ID, если он был изменен)
+			const response = await fetch(`/api/products/${newProductId}`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
@@ -123,10 +142,20 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
 			if (!response.ok) throw new Error('Failed to update product');
 
-			router.push('/admin');
+			// Показываем успешное сообщение
+			setToast({ message: 'Produkt byl úspěšně aktualizován!', type: 'success' });
+
+			// Ждем немного и переходим на админку с обновлением
+			setTimeout(() => {
+				router.push('/admin');
+				router.refresh();
+			}, 1000);
 		} catch (error) {
 			console.error('Error updating product:', error);
-			setToast({ message: 'Chyba při aktualizaci produktu', type: 'error' });
+			setToast({
+				message: error instanceof Error ? error.message : 'Chyba při aktualizaci produktu',
+				type: 'error'
+			});
 		}
 	};
 
@@ -173,6 +202,28 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 								className="border-2 border-marigold/30 object-cover"
 							/>
 						</div>
+					)}
+				</div>
+
+				{/* Product ID */}
+				<div className="border-2 border-orange-500/30 p-6 bg-orange-950/10">
+					<label className="block text-lg font_nexa text-orange-400 mb-2">
+						ID produktu
+					</label>
+					<p className="text-sm text-gray-400 mb-4">
+						Pozor! Změna ID může ovlivnit odkazy a reference na produkt.
+					</p>
+					<input
+						type="text"
+						value={newProductId}
+						onChange={e => setNewProductId(e.target.value)}
+						className="w-full bg-transparent border border-orange-500/30 text-white p-3 focus:border-orange-400 focus:outline-none font-mono"
+						placeholder="ID produktu"
+					/>
+					{newProductId !== productId && (
+						<p className="mt-2 text-orange-400 text-sm">
+							ID bude změněno z "{productId}" na "{newProductId}"
+						</p>
 					)}
 				</div>
 
