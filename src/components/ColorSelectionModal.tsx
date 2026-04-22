@@ -1,6 +1,6 @@
 'use client';
 
-import Image, { StaticImageData } from 'next/image';
+import Image from 'next/image';
 import { useState } from 'react';
 
 interface ColorOption {
@@ -12,7 +12,7 @@ interface ColorSelectionModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	productName: string;
-	productImage: StaticImageData;
+	productImage: string;
 	productPrice: number;
 	colors: ColorOption[];
 	onAddToCart: (selectedColor: string) => void;
@@ -65,6 +65,7 @@ export default function ColorSelectionModal({
 							alt={productName}
 							width={80}
 							height={80}
+							unoptimized={productImage.startsWith('data:')}
 							className="object-contain"
 						/>
 						<div>
@@ -84,10 +85,10 @@ export default function ColorSelectionModal({
 								<label
 									key={color.value}
 									className={`flex items-center gap-3 p-3 border-2 rounded cursor-pointer transition-all ${selectedColor === color.value
-											? 'border-marigold bg-marigold/10'
-											: isInCart
-												? 'border-green-600/50 bg-green-600/5'
-												: 'border-white/20 hover:border-marigold/50'
+										? 'border-marigold bg-marigold/10'
+										: isInCart
+											? 'border-green-600/50 bg-green-600/5'
+											: 'border-white/20 hover:border-marigold/50'
 										}`}
 								>
 									<input

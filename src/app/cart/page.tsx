@@ -219,6 +219,7 @@ export default function CartPage() {
 											src={item.image}
 											alt={item.name}
 											fill
+											unoptimized={item.image.startsWith('data:')}
 											className="object-cover"
 										/>
 									</div>

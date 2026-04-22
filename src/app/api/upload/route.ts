@@ -1,7 +1,4 @@
-import { existsSync } from 'fs';
-import { mkdir, writeFile } from 'fs/promises';
 import { NextRequest, NextResponse } from 'next/server';
-import { join } from 'path';
 
 export async function POST(request: NextRequest) {
 	try {
@@ -20,25 +17,20 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
+		// Проверка размера файла (макс 2MB)
+		if (file.size > 2 * 1024 * 1024) {
+			return NextResponse.json(
+				{ error: 'File size must be less than 2MB' },
+				{ status: 400 },
+			);
+		}
+
 		const bytes = await file.arrayBuffer();
 		const buffer = Buffer.from(bytes);
 
-		// Генерируем уникальное имя файла
-		const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-		const filename = `${uniqueSuffix}-${file.name.replace(/\s/g, '-')}`;
-		const uploadDir = join(process.cwd(), 'public', 'uploads');
-		const filepath = join(uploadDir, filename);
-
-		// Создаем директорию если её нет
-		if (!existsSync(uploadDir)) {
-			await mkdir(uploadDir, { recursive: true });
-		}
-
-		// Сохраняем файл
-		await writeFile(filepath, buffer);
-
-		// Возвращаем URL для доступа к файлу
-		const url = `/uploads/${filename}`;
+		// Конвертируем в base64 и создаем data URL
+		const base64 = buffer.toString('base64');
+		const url = `data:${file.type};base64,${base64}`;
 
 		return NextResponse.json({ url }, { status: 200 });
 	} catch (error) {

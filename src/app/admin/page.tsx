@@ -129,6 +129,7 @@ export default function AdminPage() {
 								src={product.image}
 								alt={product.name}
 								fill
+								unoptimized={product.image.startsWith('data:')}
 								className="object-cover"
 							/>
 						</div>

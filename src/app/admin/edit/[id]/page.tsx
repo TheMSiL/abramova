@@ -199,6 +199,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 								alt="Preview"
 								width={250}
 								height={250}
+								unoptimized={imagePreview.startsWith('data:')}
 								className="border-2 border-marigold/30 object-cover"
 							/>
 						</div>

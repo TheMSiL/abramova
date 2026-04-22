@@ -120,6 +120,7 @@ export default function CreateProductPage() {
 								alt="Preview"
 								width={250}
 								height={250}
+								unoptimized={imagePreview.startsWith('data:')}
 								className="border-2 border-marigold/30 object-cover"
 							/>
 						</div>

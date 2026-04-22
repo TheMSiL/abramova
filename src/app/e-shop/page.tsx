@@ -152,7 +152,14 @@ export default function CategoriesPage() {
 							>
 								{/* Product Image */}
 								<div className="relative h-[250px] md:h-[300px] overflow-hidden">
-									<Image src={product.image} alt={product.name} width='300' height='300' className="mx-auto object-contain aspect-square" />
+									<Image
+										src={product.image}
+										alt={product.name}
+										width='300'
+										height='300'
+										unoptimized={product.image.startsWith('data:')}
+										className="mx-auto object-contain aspect-square"
+									/>
 									{(!product.inStock || product.stock === 0) && (
 										<div className="absolute top-4 right-4 z-20 bg-red-600 text-white px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font_nexa">
 											VYPRODÁNO
