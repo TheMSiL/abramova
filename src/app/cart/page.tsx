@@ -93,9 +93,9 @@ export default function CartPage() {
 			if (!reserveResponse.ok) {
 				// Якщо недостатньо товару на складі
 				if (reserveData.productName) {
-					setToast({ 
-						message: `${reserveData.productName} - skladem pouze ${reserveData.available} ks`, 
-						type: 'error' 
+					setToast({
+						message: `${reserveData.productName} - skladem není dostatečné množství`,
+						type: 'error'
 					});
 				} else {
 					setToast({ message: reserveData.error || 'Některé produkty již nejsou skladem', type: 'error' });
@@ -254,7 +254,7 @@ export default function CartPage() {
 												<button
 													onClick={() => {
 														if (item.quantity >= item.stock) {
-														setToast({ message: `Na skladě je pouze ${item.stock} kusů`, type: 'warning' });
+															setToast({ message: `Na skladě je pouze ${item.stock} kusů`, type: 'warning' });
 															return;
 														}
 														updateQuantity(item.id, item.quantity + 1, item.selectedColor);
@@ -519,12 +519,10 @@ export default function CartPage() {
 							)}
 
 							<button
-						onClick={() => setShowConfirmModal(true)}
+								onClick={() => setShowConfirmModal(true)}
+								className="w-full px-4 py-2 border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all text-sm md:text-base font_nexa"
 							>
 								Vyprázdnit košík
-							</button>
-
-							<div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t-2 border-gray-700">
 								<h3 className="font_nexa text-marigold mb-2 md:mb-3 text-sm md:text-base">Výhody:</h3>
 								<ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm text-gray-300">
 									<li>🚚 Doprava zdarma nad 1500 Kč</li>
@@ -532,39 +530,43 @@ export default function CartPage() {
 									<li>🌱 Přírodní vosk</li>
 									<li>🇨🇿 Ručně vyrobeno v ČR</li>
 								</ul>
-							</div>
 						</div>
 					</div>
 				</div>
-
-				{/* Continue Shopping */}
-				<div className="mt-8 md:mt-12 text-center">
-					<Link href="/e-shop" className="inline-block hero_btn font_nexa text-base md:text-lg lg:text-xl">
-						← Pokračovat v nákupu
-					</Link>
-				</div>
 			</div>
 
-			{/* Toast Notification */}
-			{toast && (
-				<Toast
-					message={toast.message}
-					type={toast.type}
-					onClose={() => setToast(null)}
-				/>
-			)}
+			{/* Continue Shopping */}
+			<div className="mt-8 md:mt-12 text-center">
+				<Link href="/e-shop" className="inline-block hero_btn font_nexa text-base md:text-lg lg:text-xl">
+					← Pokračovat v nákupu
+				</Link>
+			</div>
+		</div>
 
-			{/* Confirm Modal */}
-			{showConfirmModal && (
-				<ConfirmModal
-					message="Opravdu chcete vyprázdnit košík?"
-					onConfirm={() => {
-						clearCart();
-						setShowConfirmModal(false);
-					}}
-					onCancel={() => setShowConfirmModal(false)}
-				/>
-			)}
-		</main>
+			{/* Toast Notification */ }
+	{
+		toast && (
+			<Toast
+				message={toast.message}
+				type={toast.type}
+				onClose={() => setToast(null)}
+			/>
+		)
+	}
+
+	{/* Confirm Modal */ }
+	{
+		showConfirmModal && (
+			<ConfirmModal
+				message="Opravdu chcete vyprázdnit košík?"
+				onConfirm={() => {
+					clearCart();
+					setShowConfirmModal(false);
+				}}
+				onCancel={() => setShowConfirmModal(false)}
+			/>
+		)
+	}
+		</main >
 	);
 }

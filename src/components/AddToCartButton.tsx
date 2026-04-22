@@ -25,7 +25,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 	const handleAddToCart = () => {
 		// Перевіряємо, чи є товар в наявності та чи достатньо на складі
 		if (quantity > product.stock) {
-			setToast({ message: `Na skladě je pouze ${product.stock} kusů`, type: 'warning' });
+			setToast({ message: 'Na skladě není dostatečné množství', type: 'warning' });
 			return;
 		}
 
