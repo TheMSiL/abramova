@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const TELEGRAM_BOT_TOKEN =
 	process.env.TELEGRAM_BOT_TOKEN ||
 	'8693476397:AAHtgPJuTeawThJHaxALpfR07pWiHwbVDyo';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '-5129694385';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '-5236045727';
 
 interface DeliveryForm {
 	name: string;

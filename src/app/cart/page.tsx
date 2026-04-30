@@ -105,8 +105,8 @@ export default function CartPage() {
 				return;
 			}
 
-			// 2. Якщо stock зарезервовано успішно, відправляємо email
-			const response = await fetch('/api/send-email', {
+			// 2. Якщо stock зарезервовано успішно, відправляємо в Telegram
+			const response = await fetch('/api/send-telegram', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -231,8 +231,8 @@ export default function CartPage() {
 										</h3>											{item.stock !== undefined && (
 											<p className="text-sm text-gray-400 mb-1">
 												<span className={`font_nexa ${item.stock <= 3 ? 'text-orange-400' :
-														item.stock <= 10 ? 'text-yellow-400' :
-															'text-green-400'
+													item.stock <= 10 ? 'text-yellow-400' :
+														'text-green-400'
 													}`}>
 													Skladem: {item.stock} ks
 												</span>

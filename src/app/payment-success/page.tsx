@@ -65,9 +65,9 @@ function PaymentSuccessContent() {
 				return;
 			}
 
-			// Отправляем на email
+			// Отправляем в Telegram
 			try {
-				const response = await fetch('/api/send-email', {
+				const response = await fetch('/api/send-telegram', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
